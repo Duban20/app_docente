@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gestión Docente{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Animación suave para desplegar las materias */
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        details[open] summary ~ * { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(-8px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 font-sans selection:bg-blue-200 selection:text-blue-900">
+
+    <nav class="bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                
+                <div class="flex items-center gap-3 font-black text-2xl tracking-tight cursor-pointer transition-transform hover:scale-105">
+                    <div class="bg-white/20 p-2 rounded-lg backdrop-blur-sm shadow-inner">
+                        <i class="fa-solid fa-graduation-cap text-white"></i>
+                    </div>
+                    <span>Docente<span class="text-blue-200">App</span></span>
+                </div>
+                
+                <div class="flex space-x-2 sm:space-x-4">
+                    <a href="#" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group"></i> <span class="hidden sm:inline">Mis Cursos</span>
+                    </a>
+                    <a href="#" class="hover:bg-white/10 px-4 py-2 rounded-xl text-sm font-medium transition-all text-blue-50 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie"></i> <span class="hidden sm:inline">Reportes</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>
