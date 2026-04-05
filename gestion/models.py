@@ -10,15 +10,37 @@ class Materia(models.Model):
     def __str__(self):
         return self.nombre
     
-class Curso(models.Model):
-    materia = models.ForeignKey(Materia, on_delete=models.CASCADE, related_name='cursos', null=True)
-    grado = models.CharField(max_length=50)
-    activo = models.BooleanField(default=True)
+class Grado(models.Model):
+    numero = models.PositiveIntegerField(unique=True)
+
+    class Meta:
+        ordering = ['numero']
 
     def __str__(self):
-        if self.materia:
-            return f"{self.materia.nombre} - {self.grado}"
-        return f"Curso sin materia - {self.grado}"
+        return f"{self.numero}°"
+    
+class Curso(models.Model):
+    grado = models.ForeignKey(Grado, on_delete=models.CASCADE, related_name='cursos')
+    seccion = models.CharField(max_length=10, blank=True, null=True)
+    activo = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ['grado', 'seccion']
+
+    def __str__(self):
+        if self.seccion:
+            return f"{self.grado.numero}-{self.seccion}"
+        return f"{self.grado.numero}"
+    
+class CursoMateria(models.Model):
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE, related_name='curso_materias')
+    materia = models.ForeignKey(Materia, on_delete=models.CASCADE, related_name='curso_materias')
+
+    class Meta:
+        unique_together = ['curso', 'materia']
+
+    def __str__(self):
+        return f"{self.curso} - {self.materia}"
 
 class Estudiante(models.Model):
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE, related_name='estudiantes')
@@ -38,22 +60,28 @@ class SesionClase(models.Model):
         (4, 'Cuarto Periodo'),
     ]
 
-    curso = models.ForeignKey(Curso, on_delete=models.CASCADE, related_name='sesiones')
+    curso_materia = models.ForeignKey(
+        CursoMateria,
+        on_delete=models.CASCADE,
+        related_name='sesiones'
+    )
     periodo = models.IntegerField(choices=PERIODOS, default=1)
     fecha = models.DateField(default=timezone.now)
-    numero_clase = models.PositiveIntegerField(help_text="Número de la clase en el periodo/año")
-    tema = models.CharField(max_length=255, help_text="Tema tratado hoy")
-    actividad_realizada = models.BooleanField(default=False, help_text="¿Hubo actividad evaluable hoy?")
-    tarea_asignada = models.TextField(blank=True, null=True, help_text="Tarea o pendiente para la próxima clase")
+    numero_clase = models.PositiveIntegerField(
+        help_text="Número de la clase en el periodo/año"
+    )
+    tema = models.CharField(max_length=255)
+    actividad_realizada = models.BooleanField(default=False)
+    tarea_asignada = models.TextField(blank=True, null=True)
     realizo_quiz = models.BooleanField(default=False)
     realizo_examen = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-fecha']
-        unique_together = ['curso', 'periodo', 'numero_clase']
+        unique_together = ['curso_materia', 'periodo', 'numero_clase']
 
     def __str__(self):
-        return f"{self.curso.nombre} - Clase {self.numero_clase} ({self.fecha})"
+        return f"{self.curso_materia} - Clase {self.numero_clase} ({self.fecha})"
 
 class Asistencia(models.Model):
     ESTADOS_ASISTENCIA = [

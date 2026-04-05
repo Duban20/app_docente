@@ -3,82 +3,143 @@
 {% block title %}Mis Cursos - Gestión Docente{% endblock %}
 
 {% block content %}
-    <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-            <h1 class="text-3xl font-black text-slate-900 tracking-tight">Mis Cursos</h1>
-            <p class="text-slate-500 mt-1">Selecciona un curso para iniciar tu clase o ver su rendimiento.</p>
-        </div>
-        <div class="bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-sm flex items-center gap-3">
-            <div class="bg-blue-100 text-blue-600 h-10 w-10 flex items-center justify-center rounded-lg">
-                <i class="fa-solid fa-chalkboard-user"></i>
-            </div>
-            <div>
-                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Total Materias</p>
-                <p class="text-lg font-black text-slate-800 leading-none">{{ materias|length }}</p>
+<div class="max-w-7xl mx-auto px-4 py-6 sm:px-0">
+
+    <!-- Encabezado -->
+    <div class="mb-8">
+        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-3xl shadow-2xl border border-slate-800 overflow-hidden">
+            <div class="px-6 py-6 sm:px-8 sm:py-7">
+                <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-xs font-semibold uppercase tracking-wider text-slate-200 mb-4">
+                            <i class="fa-solid fa-layer-group"></i>
+                            Panel docente
+                        </div>
+
+                        <h1 class="text-3xl sm:text-4xl font-black tracking-tight text-white">
+                            Mis Cursos
+                        </h1>
+                        <p class="text-slate-300 mt-2 max-w-2xl">
+                            Selecciona un curso y una materia para iniciar tu clase o revisar su rendimiento.
+                        </p>
+                    </div>
+
+                    <div class="bg-white/10 border border-white/10 backdrop-blur rounded-2xl px-4 py-3 shadow-lg flex items-center gap-3 w-full sm:w-auto">
+                        <div class="bg-blue-500/15 text-blue-200 h-11 w-11 flex items-center justify-center rounded-xl border border-blue-400/20">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-300 font-bold uppercase tracking-wider">Total cursos</p>
+                            <p class="text-xl font-black text-white leading-none">{{ cursos|length }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    
-    <div class="space-y-6">
-        {% for materia in materias %}
-        <details class="group bg-white overflow-hidden shadow-sm hover:shadow-md transition-all rounded-2xl border border-slate-200" {% if forloop.first %}open{% endif %}>
-            
-            <summary class="px-6 py-5 cursor-pointer flex justify-between items-center bg-white hover:bg-slate-50 transition-colors select-none border-b border-transparent group-open:border-slate-100">
-                <div class="flex items-center gap-4">
-                    <div class="bg-indigo-50 text-indigo-600 h-12 w-12 rounded-xl flex items-center justify-center shadow-inner">
-                        <i class="fa-solid fa-book-open text-xl"></i>
+
+    <!-- Contenido -->
+    <div class="space-y-5">
+        {% for curso in cursos %}
+        <details class="group bg-white overflow-hidden rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 {% if forloop.first %}open{% endif %}">
+            <summary class="list-none cursor-pointer select-none px-5 sm:px-6 py-5 sm:py-6 flex items-center justify-between gap-4 bg-white hover:bg-slate-50 transition-colors">
+                <div class="flex items-center gap-4 min-w-0">
+                    <div class="shrink-0 h-14 w-14 rounded-2xl bg-gradient-to-br from-indigo-100 to-blue-100 text-indigo-600 flex items-center justify-center border border-indigo-100 shadow-sm">
+                        <i class="fa-solid fa-book-open text-2xl"></i>
                     </div>
-                    <div>
-                        <h2 class="text-xl font-bold text-slate-800">{{ materia.nombre }}</h2>
-                        <p class="text-sm text-slate-500 font-medium">{{ materia.cursos.all|length }} Cursos asignados</p>
+
+                    <div class="min-w-0">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <h2 class="text-xl sm:text-2xl font-black text-slate-900 truncate">
+                                {{ curso }}
+                            </h2>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-[10px] font-black uppercase tracking-wider border border-slate-200">
+                                Curso
+                            </span>
+                        </div>
+
+                        <p class="text-sm text-slate-500 font-medium mt-1">
+                            Grado {{ curso.grado.numero }}
+                            {% if curso.seccion %}
+                                · Sección {{ curso.seccion }}
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
-                <div class="bg-slate-100 text-slate-400 h-8 w-8 flex items-center justify-center rounded-full transform group-open:rotate-180 transition-transform duration-300">
-                    <i class="fa-solid fa-chevron-down text-sm"></i>
+
+                <div class="shrink-0 h-10 w-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center border border-slate-200 group-open:bg-blue-600 group-open:text-white group-open:border-blue-600 transition-all duration-300">
+                    <i class="fa-solid fa-chevron-down text-sm transition-transform duration-300 group-open:rotate-180"></i>
                 </div>
             </summary>
-            
-            <div class="p-6 bg-slate-50/50">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                    
-                    {% for curso in materia.cursos.all %}
-                    <div class="bg-white rounded-2xl border border-slate-200 hover:border-blue-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-6 flex flex-col h-full relative overflow-hidden group/card">
-                        
-                        <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-50 rounded-full opacity-50 group-hover/card:scale-150 transition-transform duration-500 z-0"></div>
 
-                        <div class="relative z-10">
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="bg-blue-100 text-blue-800 text-[10px] font-black px-2.5 py-1 rounded-md uppercase tracking-widest">
-                                    Grado
+            <div class="px-5 sm:px-6 pb-6 pt-0 bg-slate-50/60 border-t border-slate-100">
+                <div class="pt-5">
+                    {% if curso.curso_materias.all %}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                        {% for curso_materia in curso.curso_materias.all %}
+                        <div class="group/card relative overflow-hidden bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
+                            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500"></div>
+
+                            <div class="absolute -right-8 -top-8 w-28 h-28 rounded-full bg-blue-50 opacity-80 group-hover/card:scale-150 transition-transform duration-500"></div>
+
+                            <div class="relative z-10 p-6 flex flex-col h-full">
+                                <div class="flex items-start justify-between gap-3 mb-5">
+                                    <div class="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-widest border border-blue-100">
+                                        Materia
+                                    </div>
+                                    <div class="h-10 w-10 rounded-2xl bg-slate-50 border border-slate-200 text-slate-300 flex items-center justify-center group-hover/card:text-blue-400 transition-colors">
+                                        <i class="fa-solid fa-users"></i>
+                                    </div>
                                 </div>
-                                <i class="fa-solid fa-users text-slate-300 group-hover/card:text-blue-300 transition-colors text-lg"></i>
-                            </div>
-                            <h3 class="text-3xl font-black text-slate-800 mb-8 group-hover/card:text-blue-700 transition-colors">{{ curso.grado }}</h3>
-                        </div>
-                        
-                        <div class="mt-auto space-y-2 relative z-10">
-                            <a href="{% url 'gestion:abrir_clase' curso.id %}" class="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow-md hover:shadow-blue-500/30 transition-all duration-200 active:scale-95">
-                                <i class="fa-solid fa-door-open"></i> Iniciar Clase
-                            </a>
-                            <a href="{% url 'gestion:reporte_curso' curso.id %}" class="flex items-center justify-center gap-2 w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 px-4 rounded-xl transition-all duration-200 active:scale-95">
-                                <i class="fa-solid fa-chart-simple"></i> Reportes
-                            </a>
-                        </div>
-                    </div>
-                    {% endfor %}
 
+                                <h3 class="text-2xl font-black text-slate-900 leading-tight group-hover/card:text-blue-700 transition-colors">
+                                    {{ curso_materia.materia.nombre }}
+                                </h3>
+
+                                <p class="text-sm text-slate-500 mt-2 font-medium">
+                                    {{ curso }}
+                                </p>
+
+                                <div class="mt-6 pt-5 border-t border-slate-100 space-y-2.5">
+                                    <a href="{% url 'gestion:abrir_clase' curso_materia.id %}"
+                                       class="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 shadow-lg shadow-blue-600/20 transition-all duration-200 active:scale-[0.98]">
+                                        <i class="fa-solid fa-door-open"></i>
+                                        Iniciar clase
+                                    </a>
+
+                                    <a href="{% url 'gestion:reporte_curso' curso_materia.id %}"
+                                       class="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3 px-4 transition-all duration-200 active:scale-[0.98] border border-slate-200">
+                                        <i class="fa-solid fa-chart-simple"></i>
+                                        Reportes
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="bg-white rounded-3xl border border-dashed border-slate-300 p-10 text-center text-slate-500 shadow-sm">
+                        <div class="mx-auto h-14 w-14 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mb-4">
+                            <i class="fa-solid fa-book text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-800">Este curso todavía no tiene materias asignadas</h3>
+                        <p class="text-sm text-slate-500 mt-2">Cuando agregues materias, aparecerán aquí para iniciar clase o revisar reportes.</p>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </details>
-        
         {% empty %}
-        <div class="bg-white rounded-3xl border border-dashed border-slate-300 p-12 text-center flex flex-col items-center justify-center shadow-sm">
-            <div class="bg-yellow-50 text-yellow-500 h-20 w-20 rounded-full flex items-center justify-center mb-4 shadow-inner">
+        <div class="bg-white rounded-3xl border border-dashed border-slate-300 p-12 text-center shadow-sm">
+            <div class="mx-auto bg-amber-50 text-amber-500 h-20 w-20 rounded-full flex items-center justify-center mb-4 border border-amber-100">
                 <i class="fa-solid fa-folder-open text-3xl"></i>
             </div>
-            <h3 class="text-xl font-bold text-slate-800 mb-2">No hay materias registradas</h3>
-            <p class="text-slate-500 max-w-sm">Actualmente no tienes materias o cursos asignados en el sistema para iniciar tus clases.</p>
+            <h3 class="text-xl font-black text-slate-800 mb-2">No hay cursos registrados</h3>
+            <p class="text-slate-500 max-w-sm mx-auto">
+                Actualmente no tienes cursos o materias asignadas en el sistema.
+            </p>
         </div>
         {% endfor %}
     </div>
+</div>
 {% endblock %}

@@ -1,5 +1,10 @@
 from django.contrib import admin
-from .models import Curso, Estudiante, SesionClase, Asistencia, Anotacion, Materia
+from .models import Grado, Curso, CursoMateria, Materia, Estudiante, SesionClase, Asistencia, Anotacion
+
+@admin.register(Grado)
+class GradoAdmin(admin.ModelAdmin):
+    list_display = ('numero',)
+    search_fields = ('numero',)
 
 @admin.register(Materia)
 class MateriaAdmin(admin.ModelAdmin):
@@ -8,9 +13,15 @@ class MateriaAdmin(admin.ModelAdmin):
 
 @admin.register(Curso)
 class CursoAdmin(admin.ModelAdmin):
-    list_display = ('materia', 'grado', 'activo')
-    list_filter = ('materia', 'activo')
-    search_fields = ('materia__nombre', 'grado')
+    list_display = ('grado', 'seccion', 'activo')
+    list_filter = ('grado', 'activo')
+    search_fields = ('grado__numero', 'seccion')
+
+@admin.register(CursoMateria)
+class CursoMateriaAdmin(admin.ModelAdmin):
+    list_display = ('curso', 'materia')
+    list_filter = ('curso__grado', 'materia')
+    search_fields = ('curso__grado__numero', 'curso__seccion', 'materia__nombre')
 
 @admin.register(Estudiante)
 class EstudianteAdmin(admin.ModelAdmin):
@@ -20,19 +31,19 @@ class EstudianteAdmin(admin.ModelAdmin):
 
 @admin.register(SesionClase)
 class SesionClaseAdmin(admin.ModelAdmin):
-    list_display = ('curso', 'numero_clase', 'tema', 'fecha', 'actividad_realizada')
-    list_filter = ('curso', 'fecha', 'actividad_realizada')
+    list_display = ('curso_materia', 'numero_clase', 'tema', 'fecha', 'actividad_realizada')
+    list_filter = ('curso_materia__curso__grado', 'curso_materia__materia', 'fecha', 'actividad_realizada')
     search_fields = ('tema',)
-    date_hierarchy = 'fecha' # Agrega una barra de navegación por fechas muy útil
+    date_hierarchy = 'fecha'
 
 @admin.register(Asistencia)
 class AsistenciaAdmin(admin.ModelAdmin):
     list_display = ('estudiante', 'sesion', 'estado', 'completo_actividad')
-    list_filter = ('estado', 'sesion__curso', 'sesion__fecha')
+    list_filter = ('estado', 'sesion__curso_materia__curso__grado', 'sesion__fecha')
     search_fields = ('estudiante__nombres', 'estudiante__apellidos')
 
 @admin.register(Anotacion)
 class AnotacionAdmin(admin.ModelAdmin):
     list_display = ('estudiante', 'tipo', 'sesion', 'fecha_creacion')
-    list_filter = ('tipo', 'sesion__curso')
+    list_filter = ('tipo', 'sesion__curso_materia__curso__grado')
     search_fields = ('estudiante__nombres', 'estudiante__apellidos', 'descripcion')

@@ -18,7 +18,9 @@
                     <i class="fa-regular fa-calendar"></i> {{ sesion.fecha|date:"d M Y" }}
                 </span>
             </div>
-            <h2 class="text-3xl font-black text-slate-800 mb-1">{{ sesion.curso }}</h2>
+            <h2 class="text-3xl font-black text-slate-800 mb-1">
+                {{ sesion.curso_materia.curso }} · {{ sesion.curso_materia.materia }}
+            </h2>
             <p class="text-lg text-slate-600 font-medium">{{ sesion.tema }}</p>
         </div>
         
@@ -58,7 +60,6 @@
         {% csrf_token %}
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-10 items-start">
-            
             {% for asistencia in asistencias %}
             <div class="bg-white rounded-2xl shadow-sm hover:shadow-lg border border-slate-200 transition-all duration-300 overflow-hidden flex flex-col">
                 
@@ -88,7 +89,6 @@
                                         text-slate-300 hover:text-yellow-500 hover:bg-yellow-50 p-1.5 rounded-xl
                                    {% endif %}" 
                             title="{% if asistencia.anotaciones_clase %}Anotaciones{% else %}Añadir Anotación{% endif %}">
-                        
                         <i class="fa-solid fa-comment-dots text-lg"></i>
                         {% if asistencia.anotaciones_clase %}
                             <span class="text-xs font-black">{{ asistencia.anotaciones_clase|length }}</span>
@@ -118,7 +118,6 @@
                 </div>
 
                 <div class="p-4 flex flex-col flex-grow space-y-3">
-                    
                     <div class="flex bg-slate-100 rounded-xl p-1 shadow-inner">
                         <label class="flex-1 text-center cursor-pointer">
                             <input type="radio" name="estado_{{ asistencia.id }}" value="PRESENTE" class="peer hidden" onchange="bloquearActividades('{{ asistencia.id }}', this.value)" {% if asistencia.estado == 'PRESENTE' %}checked{% endif %}>
@@ -141,7 +140,6 @@
                     </div>
 
                     <div class="space-y-2 mt-auto">
-                        
                         {% if sesion.actividad_realizada %}
                         <div class="bg-blue-50/50 border border-blue-100 rounded-xl p-2.5 transition-colors hover:bg-blue-50">
                             <div class="flex items-center justify-between">
@@ -177,7 +175,15 @@
                             <div id="panel_evaluacion_{{ asistencia.id }}" class="{% if not asistencia.calificacion and not asistencia.comentario_actividad %}hidden{% endif %} mt-2 pt-2 border-t border-blue-100/50">
                                 <div class="flex gap-2 items-center mb-1.5">
                                     <label class="text-[10px] font-bold text-blue-800">Calif:</label>
-                                    <input type="number" name="calificacion_{{ asistencia.id }}" value="{{ asistencia.calificacion|default_if_none:'' }}" min="20" max="100" step="10" class="w-16 p-1 text-xs border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                                    <input type="number" 
+                                           name="calificacion_{{ asistencia.id }}" 
+                                           value="{{ asistencia.calificacion|default_if_none:'' }}" 
+                                           min="20" max="100" step="10"
+                                           oninput="if(this.value) { 
+                                               let chk = document.getElementById('actividad_{{ asistencia.id }}'); 
+                                               if(chk && !chk.disabled) chk.checked = true; 
+                                           }"
+                                           class="w-16 p-1 text-xs border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                                 </div>
                                 <textarea name="comentario_{{ asistencia.id }}" rows="1" placeholder="Sugerencias..." class="w-full p-1.5 text-[11px] border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none">{{ asistencia.comentario_actividad|default_if_none:'' }}</textarea>
                             </div>
@@ -246,7 +252,6 @@
                             </div>
                         </div>
                         {% endif %}
-
                     </div>
                 </div>
             </div>
@@ -265,13 +270,12 @@
         </div>
 
         <div class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-slate-200 p-4 z-40 flex justify-center gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-            
             <button type="button" onclick="confirmarEliminacion()" class="bg-white text-red-600 hover:bg-red-50 hover:border-red-200 font-bold py-3 px-6 rounded-2xl transition-all flex items-center border border-slate-200 shadow-sm" title="Eliminar clase permanentemente">
                 <i class="fa-solid fa-trash-can mr-2"></i> {% if es_nueva %}Descartar{% else %}Eliminar{% endif %}
             </button>
             
             {% if not es_nueva %}
-            <a href="{% url 'gestion:reporte_curso' sesion.curso.id %}" class="bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold py-3 px-6 rounded-2xl transition-all flex items-center shadow-sm">
+            <a href="{% url 'gestion:reporte_curso' sesion.curso_materia.id %}" class="bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold py-3 px-6 rounded-2xl transition-all flex items-center shadow-sm">
                 <i class="fa-solid fa-xmark mr-2"></i> Cancelar
             </a>
             {% endif %}
@@ -280,7 +284,6 @@
                 <i class="fa-solid fa-floppy-disk mr-2"></i> Guardar Clase
             </button>
         </div>
-
     </form>
 </div>
 
@@ -318,8 +321,7 @@
                         <label class="block text-slate-700 text-xs font-bold mb-2 uppercase tracking-wider" for="desc-anotacion">Descripción del incidente</label>
                         <textarea id="desc-anotacion" rows="3" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" placeholder="Detalla lo ocurrido..."></textarea>
                     </div>
-                    <div id="contenedor-historial-modal" class="mt-6 border-t border-slate-100 pt-4 hidden">
-                    </div>
+                    <div id="contenedor-historial-modal" class="mt-6 border-t border-slate-100 pt-4 hidden"></div>
                 </form>
             </div>
             <div class="bg-slate-50 px-6 py-4 flex flex-col sm:flex-row-reverse gap-3 border-t border-slate-100">
@@ -359,7 +361,7 @@
         </div>
     </div>
 </div>
-{% endif %} 
+{% endif %}
 
 <div id="modal-confirmacion" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -398,7 +400,6 @@
         }
     }
 
-    // --- SCRIPTS DE CONFIRMACIÓN DE GUARDADO ---
     const modalConfirmacion = document.getElementById('modal-confirmacion');
 
     function abrirModalConfirmacion() {
@@ -414,11 +415,9 @@
         btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Guardando...';
         btnSubmit.disabled = true;
         btnSubmit.classList.add('opacity-75', 'cursor-not-allowed');
-        
         document.getElementById('form-asistencia').submit();
     }
 
-    // --- SCRIPT DEL RECORDATORIO DE TAREA ---
     function cerrarRecordatorio() {
         const modalTarea = document.getElementById('modal-recordatorio-tarea');
         if (modalTarea) {
@@ -426,7 +425,6 @@
         }
     }
 
-    // --- SCRIPTS DE ANOTACIONES ---
     const modal = document.getElementById('modal-anotacion');
     const tituloNombre = document.getElementById('modal-estudiante-nombre');
     const inputEstudianteId = document.getElementById('modal-estudiante-id');
@@ -434,12 +432,12 @@
     const inputDesc = document.getElementById('desc-anotacion');
     const btnGuardar = document.getElementById('btn-guardar-modal');
 
-    const SESION_ID = "{{ sesion.id }}"; 
+    const SESION_ID = "{{ sesion.id }}";
 
     function abrirModalAnotacion(estudianteId, estudianteNombre) {
         inputEstudianteId.value = estudianteId;
         tituloNombre.textContent = "Para: " + estudianteNombre;
-        inputDesc.value = ""; 
+        inputDesc.value = "";
         
         const historialOculto = document.getElementById('historial_oculto_' + estudianteId);
         const contenedorModal = document.getElementById('contenedor-historial-modal');
@@ -488,7 +486,7 @@
         .then(data => {
             if(data.status === 'success') {
                 cerrarModal();
-                alert("¡Anotación guardada exitosamente!"); 
+                alert("¡Anotación guardada exitosamente!");
             } else {
                 alert("Error al guardar: " + data.mensaje);
             }
@@ -535,7 +533,6 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         const radiosMarcados = document.querySelectorAll('input[type="radio"]:checked');
-        
         radiosMarcados.forEach(function(radio) {
             const nombre = radio.name;
             if (nombre.startsWith('estado_')) {
@@ -549,28 +546,49 @@
         const label = document.getElementById('label_foto_' + asistenciaId);
         const checkActividad = document.getElementById('actividad_' + asistenciaId);
 
+        // Cambiar estilos
         label.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
         label.classList.add('bg-green-500', 'text-white', 'border-transparent');
-        label.innerHTML = '<i class="fa-solid fa-check"></i> <input type="file" id="foto_' + asistenciaId + '" name="foto_' + asistenciaId + '" accept="image/*" capture="environment" class="hidden" onchange="confirmarFoto(\'' + asistenciaId + '\')">';
 
+        // Cambiar icono sin tocar el input
+        const icon = label.querySelector('i');
+        if (icon) {
+            icon.classList.remove('fa-camera');
+            icon.classList.add('fa-check');
+        }
+
+        // Marcar actividad automáticamente
         if (checkActividad && !checkActividad.disabled) {
             checkActividad.checked = true;
         }
     }
 
+
     function eliminarFotoVisual(asistenciaId) {
-        if(confirm("¿Quitar esta evidencia? Se borrará al guardar la clase.")){
+        if (confirm("¿Quitar esta evidencia? Se borrará al guardar la clase.")) {
             document.getElementById('input_borrar_foto_' + asistenciaId).checked = true;
-            
+
             const acciones = document.getElementById('acciones_foto_' + asistenciaId);
             if (acciones) acciones.style.display = 'none';
 
             const label = document.getElementById('label_foto_' + asistenciaId);
+
+            // Cambiar estilos
             label.classList.remove('bg-green-500', 'text-white', 'border-transparent');
             label.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
-            label.innerHTML = '<i class="fa-solid fa-camera"></i> <input type="file" id="foto_' + asistenciaId + '" name="foto_' + asistenciaId + '" accept="image/*" capture="environment" class="hidden" onchange="confirmarFoto(\'' + asistenciaId + '\')">';
 
-            document.getElementById('foto_' + asistenciaId).value = "";
+            // Cambiar icono sin tocar el input
+            const icon = label.querySelector('i');
+            if (icon) {
+                icon.classList.remove('fa-check');
+                icon.classList.add('fa-camera');
+            }
+
+            // Limpiar input file
+            const inputFile = document.getElementById('foto_' + asistenciaId);
+            if (inputFile) {
+                inputFile.value = "";
+            }
         }
     }
 
