@@ -58,10 +58,24 @@
 
     <form method="POST" id="form-asistencia" enctype="multipart/form-data">
         {% csrf_token %}
+
+        <div class="mb-6">
+            <div class="relative">
+                <input 
+                    type="text" 
+                    id="buscador-estudiantes"
+                    placeholder="Buscar estudiante por nombre o apellido..."
+                    class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 pl-11 focus:ring-2 focus:ring-blue-500 outline-none"
+                >
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            </div>
+        </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-10 items-start">
             {% for asistencia in asistencias %}
-            <div class="bg-white rounded-2xl shadow-sm hover:shadow-lg border border-slate-200 transition-all duration-300 overflow-hidden flex flex-col">
+            <div class="bg-white rounded-2xl shadow-sm tarjeta-estudiante hover:shadow-lg border border-slate-200 
+                 transition-all duration-300 overflow-hidden flex flex-col" 
+                 data-nombre="{{ asistencia.estudiante.nombres }} {{ asistencia.estudiante.apellidos }}">
                 
                 <div class="p-4 border-b border-slate-50 bg-slate-50/50 flex items-center justify-between">
                     <div class="flex items-center gap-3">
@@ -617,6 +631,26 @@
                 console.error(error);
             });
         }
+    }
+
+    // Buscador
+    const buscador = document.getElementById('buscador-estudiantes');
+
+    if (buscador) {
+        buscador.addEventListener('keyup', function() {
+            const texto = this.value.toLowerCase();
+            const tarjetas = document.querySelectorAll('.tarjeta-estudiante');
+
+            tarjetas.forEach(function(tarjeta) {
+                const nombre = tarjeta.getAttribute('data-nombre').toLowerCase();
+
+                if (nombre.includes(texto)) {
+                    tarjeta.style.display = 'flex';
+                } else {
+                    tarjeta.style.display = 'none';
+                }
+            });
+        });
     }
 </script>
 

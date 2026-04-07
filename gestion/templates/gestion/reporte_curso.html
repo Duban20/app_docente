@@ -59,10 +59,23 @@
         </div>
     </div>
 
+    <div class="mb-5">
+        <div class="relative">
+            <input 
+                type="text" 
+                id="buscador-estudiantes"
+                placeholder="Buscar estudiante..."
+                class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 pl-11 focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"
+            >
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        </div>
+    </div>
+
     <!-- Tarjetas plegables por estudiante -->
     <div class="space-y-5">
         {% for fila in datos_tabla %}
-        <details class="group bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+        <details class="group bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden tarjeta-estudiante"
+                 data-nombre="{{ fila.estudiante.apellidos }} {{ fila.estudiante.nombres }}">
             <summary class="list-none cursor-pointer select-none">
                 <div class="p-5 sm:p-6 hover:bg-gray-50/60 transition-colors">
                     <div class="flex flex-col gap-4">
@@ -484,6 +497,28 @@
             });
         }
     });
+
+    // Buscador
+    const buscador = document.getElementById('buscador-estudiantes');
+
+    if (buscador) {
+        buscador.addEventListener('keyup', function() {
+            const texto = this.value.toLowerCase();
+            const tarjetas = document.querySelectorAll('.tarjeta-estudiante');
+
+            tarjetas.forEach(function(tarjeta) {
+                const nombre = tarjeta.getAttribute('data-nombre').toLowerCase();
+
+                if (nombre.includes(texto)) {
+                    tarjeta.style.display = 'block';
+                    tarjeta.open = true;
+                } else {
+                    tarjeta.style.display = 'none';
+                    tarjeta.open = false;
+                }
+            });
+        });
+    }
 </script>
 
 {% endblock %}
