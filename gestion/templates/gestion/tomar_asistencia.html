@@ -60,6 +60,13 @@
         {% csrf_token %}
 
         <div class="mb-6">
+            <div class="mb-4 flex justify-end">
+                <button type="button" onclick="abrirModalEstudiante()"
+                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl shadow">
+                    <i class="fa-solid fa-user-plus mr-2"></i> Nuevo Estudiante
+                </button>
+            </div>
+
             <div class="relative">
                 <input 
                     type="text" 
@@ -93,21 +100,47 @@
                             <p class="text-slate-500 text-[11px] font-medium">{{ asistencia.estudiante.nombres }}</p>
                         </div>
                     </div>
-                    
-                    <button type="button" 
-                            onclick="abrirModalAnotacion('{{ asistencia.estudiante.id }}', '{{ asistencia.estudiante.nombres }} {{ asistencia.estudiante.apellidos }}')"
-                            class="transition-all focus:outline-none flex items-center gap-1.5
-                                   {% if asistencia.anotaciones_clase %} 
-                                        text-yellow-700 bg-yellow-100 hover:bg-yellow-200 px-2.5 py-1.5 rounded-xl shadow-sm
-                                   {% else %} 
-                                        text-slate-300 hover:text-yellow-500 hover:bg-yellow-50 p-1.5 rounded-xl
-                                   {% endif %}" 
-                            title="{% if asistencia.anotaciones_clase %}Anotaciones{% else %}Añadir Anotación{% endif %}">
-                        <i class="fa-solid fa-comment-dots text-lg"></i>
+
+                    <!-- Botón anotación -->
+                    <button type="button"
+                        id="btn-anotacion-{{ asistencia.estudiante.id }}"
+                        onclick="abrirModalAnotacion('{{ asistencia.estudiante.id }}', '{{ asistencia.estudiante.nombres }} {{ asistencia.estudiante.apellidos }}')"
+                        class="p-2 rounded-lg transition 
                         {% if asistencia.anotaciones_clase %}
-                            <span class="text-xs font-black">{{ asistencia.anotaciones_clase|length }}</span>
-                        {% endif %}
+                            bg-yellow-100 text-yellow-600
+                        {% else %}
+                            text-slate-400 hover:text-yellow-600 hover:bg-yellow-50
+                        {% endif %}">
+                        
+                        <i class="fa-solid fa-comment-dots"></i>
                     </button>
+                    
+                    <div class="relative">
+                        <button type="button" onclick="toggleMenu('{{ asistencia.estudiante.id }}')"
+                            class="text-slate-400 hover:text-slate-700 p-2 rounded-lg hover:bg-slate-100 transition">
+                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
+
+                        <div id="menu-{{ asistencia.estudiante.id }}"
+                            class="hidden absolute right-0 mt-2 w-44 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden">
+
+                            <!-- Editar -->
+                            <button type="button"
+                                onclick="editarEstudiante('{{ asistencia.estudiante.id }}', '{{ asistencia.estudiante.nombres }}', '{{ asistencia.estudiante.apellidos }}')"
+                                class="w-full text-left px-4 py-2 text-sm hover:bg-blue-50 flex items-center gap-2">
+                                <i class="fa-solid fa-pen text-blue-500"></i>
+                                Editar
+                            </button>
+
+                            <!-- Inactivar -->
+                            <button type="button"
+                                onclick="inactivarEstudiante('{{ asistencia.estudiante.id }}')"
+                                class="w-full text-left px-4 py-2 text-sm hover:bg-red-50 flex items-center gap-2">
+                                <i class="fa-solid fa-user-slash text-red-500"></i>
+                                Inactivar
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="historial_oculto_{{ asistencia.estudiante.id }}" class="hidden">
@@ -122,7 +155,11 @@
                                     </span>
                                     <p class="text-xs text-gray-700 italic">"{{ anotacion.descripcion }}"</p>
                                 </div>
-                                <button type="button" data-id="{{ anotacion.id }}" onclick="borrarAnotacionFlash(this.getAttribute('data-id'))" class="text-red-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded transition-colors" title="Eliminar permanentemente">
+                                <button type="button"
+                                    data-id="{{ anotacion.id }}"
+                                    onclick="borrarAnotacionFlash(event, this.getAttribute('data-id'))"
+                                    class="text-red-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded transition-colors"
+                                    title="Eliminar permanentemente">
                                     <i class="fa-solid fa-trash-can text-xs"></i>
                                 </button>
                             </div>
@@ -403,6 +440,27 @@
     </div>
 </div>
 
+<div id="modal-estudiante" class="fixed inset-0 z-50 hidden">
+    <div class="fixed inset-0 bg-black/40" onclick="cerrarModalEstudiante()"></div>
+
+    <div class="bg-white max-w-md mx-auto mt-32 p-6 rounded-2xl shadow-xl relative z-10">
+        <h3 id="titulo-modal-estudiante" class="text-xl font-bold mb-4">Nuevo Estudiante</h3>
+
+        <input type="hidden" id="estudiante-id">
+
+        <input type="text" id="nuevo-nombre" placeholder="Nombres"
+            class="w-full mb-3 p-2 border rounded-lg">
+
+        <input type="text" id="nuevo-apellido" placeholder="Apellidos"
+            class="w-full mb-4 p-2 border rounded-lg">
+
+        <div class="flex justify-end gap-2">
+            <button onclick="cerrarModalEstudiante()" class="px-4 py-2 bg-gray-200 rounded-lg">Cancelar</button>
+            <button onclick="crearEstudiante()" class="px-4 py-2 bg-green-600 text-white rounded-lg">Guardar</button>
+        </div>
+    </div>
+</div>
+
 <form id="form-eliminar-clase" method="POST" action="{% url 'gestion:eliminar_sesion' sesion.id %}" class="hidden">
     {% csrf_token %}
 </form>
@@ -459,6 +517,13 @@
         if (historialOculto && historialOculto.innerHTML.trim() !== '') {
             contenedorModal.innerHTML = historialOculto.innerHTML;
             contenedorModal.classList.remove('hidden');
+
+            // precargar primera anotación (opcional)
+            const primera = contenedorModal.querySelector('p');
+            if (primera) {
+                inputDesc.value = primera.textContent.replace(/"/g, '');
+            }
+
         } else {
             contenedorModal.innerHTML = '';
             contenedorModal.classList.add('hidden');
@@ -469,6 +534,19 @@
 
     function cerrarModal() {
         modal.classList.add('hidden');
+
+        // limpiar campos
+        inputDesc.value = "";
+        inputTipo.value = "COMPORTAMIENTO";
+
+        // limpiar historial del modal
+        const contenedorModal = document.getElementById('contenedor-historial-modal');
+        contenedorModal.innerHTML = '';
+        contenedorModal.classList.add('hidden');
+
+        // limpiar estudiante seleccionado
+        inputEstudianteId.value = "";
+        tituloNombre.textContent = "Estudiante";
     }
 
     function guardarAnotacion() {
@@ -499,10 +577,45 @@
         .then(response => response.json())
         .then(data => {
             if(data.status === 'success') {
+
+                const estudianteId = inputEstudianteId.value;
+
+                // 🔶 1. Iluminar botón
+                const btn = document.getElementById('btn-anotacion-' + estudianteId);
+                if (btn) {
+                    btn.classList.remove('text-slate-400');
+                    btn.classList.add('bg-yellow-100', 'text-yellow-600');
+                }
+
+                // 🔶 2. Crear nueva anotación visual
+                const contenedorOculto = document.getElementById('historial_oculto_' + estudianteId);
+
+                const nueva = document.createElement('div');
+                nueva.className = "bg-gray-50 border border-gray-100 rounded p-2 flex justify-between items-start shadow-sm mt-2";
+
+                nueva.innerHTML = `
+                    <div>
+                        <span class="text-[9px] font-bold uppercase tracking-wider bg-white border border-gray-200 px-1.5 py-0.5 rounded text-gray-500 mb-1 inline-block">
+                            ${inputTipo.value}
+                        </span>
+                        <p class="text-xs text-gray-700 italic">"${inputDesc.value}"</p>
+                    </div>
+                    <button class="text-red-400 hover:text-red-600 p-1.5">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>
+                `;
+
+                // 🔶 3. Insertar en historial oculto
+                if (contenedorOculto) {
+                    contenedorOculto.classList.remove('hidden');
+                    contenedorOculto.appendChild(nueva);
+                }
+
                 cerrarModal();
-                alert("¡Anotación guardada exitosamente!");
+                inputDesc.value = "";
+
             } else {
-                alert("Error al guardar: " + data.mensaje);
+                alert("Error: " + data.mensaje);
             }
         })
         .catch(error => {
@@ -606,7 +719,10 @@
         }
     }
 
-    function borrarAnotacionFlash(anotacionId) {
+    function borrarAnotacionFlash(event, anotacionId) {
+        event.stopPropagation(); // evita que dispare otras cosas
+        event.preventDefault();  // evita submit del form
+
         if(confirm("¿Seguro que deseas eliminar esta anotación del sistema?")) {
             fetch(`/anotacion/eliminar/${anotacionId}/`, {
                 method: 'POST',
@@ -619,16 +735,11 @@
             .then(data => {
                 if(data.status === 'ok') {
                     const elementos = document.querySelectorAll('#anotacion_item_' + anotacionId);
-                    elementos.forEach(elemento => {
-                        elemento.style.transition = "opacity 0.3s ease";
-                        elemento.style.opacity = "0";
-                        setTimeout(() => elemento.remove(), 300);
+                    elementos.forEach(el => {
+                        el.style.opacity = "0";
+                        setTimeout(() => el.remove(), 300);
                     });
                 }
-            })
-            .catch(error => {
-                alert('Hubo un error al intentar borrar la anotación.');
-                console.error(error);
             });
         }
     }
@@ -652,6 +763,114 @@
             });
         });
     }
+
+    // Inactivar estudiante
+    function inactivarEstudiante(estudianteId) {
+        if (!confirm("¿Inactivar este estudiante? Ya no aparecerá en asistencia.")) return;
+
+        fetch(`/estudiante/inactivar/${estudianteId}/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "ok") {
+                location.reload(); // recarga la lista
+            } else {
+                alert("Error al inactivar");
+            }
+        });
+    }
+
+    // Modal para crear estudiantes
+    function abrirModalEstudiante() {
+        document.getElementById('modal-estudiante').classList.remove('hidden');
+
+        // limpiar si es nuevo
+        if (!document.getElementById('estudiante-id').value) {
+            document.getElementById('nuevo-nombre').value = "";
+            document.getElementById('nuevo-apellido').value = "";
+            document.getElementById('titulo-modal-estudiante').innerText = "Nuevo Estudiante";
+        }
+    }
+
+    function cerrarModalEstudiante() {
+        document.getElementById('modal-estudiante').classList.add('hidden');
+
+        // limpiar todo
+        document.getElementById('estudiante-id').value = "";
+        document.getElementById('nuevo-nombre').value = "";
+        document.getElementById('nuevo-apellido').value = "";
+        document.getElementById('titulo-modal-estudiante').innerText = "Nuevo Estudiante";
+    }
+
+    // Crear estudiante
+    function crearEstudiante() {
+        const id = document.getElementById('estudiante-id').value;
+        const nombres = document.getElementById('nuevo-nombre').value.trim();
+        const apellidos = document.getElementById('nuevo-apellido').value.trim();
+
+        if (!nombres || !apellidos) {
+            alert("Completa todos los campos");
+            return;
+        }
+
+        const url = id ? `/estudiante/editar/${id}/` : `/estudiante/crear/`;
+
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nombres: nombres,
+                apellidos: apellidos,
+                curso_id: "{{ sesion.curso_materia.curso.id }}"
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "ok") {
+                location.reload();
+            } else {
+                alert("Error");
+            }
+        });
+    }
+
+    // Modal edicion
+    function editarEstudiante(id, nombres, apellidos) {
+        document.getElementById('estudiante-id').value = id;
+        document.getElementById('nuevo-nombre').value = nombres;
+        document.getElementById('nuevo-apellido').value = apellidos;
+
+        document.getElementById('titulo-modal-estudiante').innerText = "Editar Estudiante";
+
+        abrirModalEstudiante();
+    }
+
+    function toggleMenu(id) {
+        const menu = document.getElementById('menu-' + id);
+
+        // cerrar todos primero
+        document.querySelectorAll('[id^="menu-"]').forEach(m => {
+            if (m !== menu) m.classList.add('hidden');
+        });
+
+        menu.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('[onclick^="toggleMenu"]') && !e.target.closest('[id^="menu-"]')) {
+            document.querySelectorAll('[id^="menu-"]').forEach(menu => {
+                menu.classList.add('hidden');
+            });
+        }
+    });
 </script>
 
 {% endblock %}

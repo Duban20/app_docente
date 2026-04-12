@@ -108,7 +108,8 @@ def tomar_asistencia(request, sesion_id):
     )
 
     asistencias = (
-        sesion.asistencias.all()
+        sesion.asistencias
+        .filter(estudiante__activo=True)
         .select_related('estudiante')
         .order_by('estudiante__apellidos', 'estudiante__nombres')
     )
@@ -408,4 +409,38 @@ def reporte_curso(request, curso_materia_id):
 def eliminar_anotacion(request, anotacion_id):
     anotacion = get_object_or_404(Anotacion, id=anotacion_id)
     anotacion.delete()
+    return JsonResponse({'status': 'ok'})
+
+@require_POST
+def crear_estudiante(request):
+    data = json.loads(request.body)
+
+    estudiante = Estudiante.objects.create(
+        nombres=data['nombres'],
+        apellidos=data['apellidos'],
+        curso_id=data['curso_id'],
+        activo=True
+    )
+
+    return JsonResponse({'status': 'ok'})
+
+@require_POST
+def editar_estudiante(request, estudiante_id):
+    data = json.loads(request.body)
+
+    estudiante = get_object_or_404(Estudiante, id=estudiante_id)
+
+    estudiante.nombres = data['nombres']
+    estudiante.apellidos = data['apellidos']
+
+    estudiante.save()
+
+    return JsonResponse({'status': 'ok'})
+
+@require_POST
+def inactivar_estudiante(request, estudiante_id):
+    estudiante = get_object_or_404(Estudiante, id=estudiante_id)
+    estudiante.activo = False
+    estudiante.save()
+
     return JsonResponse({'status': 'ok'})

@@ -11,4 +11,7 @@ urlpatterns = [
     path('curso-materia/<int:curso_materia_id>/reportes/', views.reporte_curso, name='reporte_curso'),
     path('sesion/<int:sesion_id>/eliminar/', views.eliminar_sesion, name='eliminar_sesion'),
     path('anotacion/eliminar/<int:anotacion_id>/', views.eliminar_anotacion, name='eliminar_anotacion'),
+    path('estudiante/crear/', views.crear_estudiante, name='crear_estudiante'),
+    path('estudiante/editar/<int:estudiante_id>/', views.editar_estudiante, name='editar_estudiante'),
+    path('estudiante/inactivar/<int:estudiante_id>/', views.inactivar_estudiante, name='inactivar_estudiante'),
 ]

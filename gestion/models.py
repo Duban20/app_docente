@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from django.db.models.signals import post_delete, pre_save
+from django.db.models.signals import post_delete, pre_save, post_save
 from django.dispatch import receiver
 import os
 
@@ -162,3 +162,29 @@ def auto_eliminar_foto_al_modificar(sender, instance, **kwargs):
     if vieja_foto and vieja_foto != nueva_foto:
         if os.path.isfile(vieja_foto.path):
             os.remove(vieja_foto.path)
+
+# 3. Crear asistencias para nuevo alumno agregado
+@receiver(post_save, sender=Estudiante)
+def crear_asistencias_para_nuevo_estudiante(sender, instance, created, **kwargs):
+    """
+    Cuando se crea un estudiante nuevo, se le crean asistencias
+    para TODAS las clases ya existentes de su curso.
+    """
+    if created and instance.activo:
+        # Buscar todas las sesiones del curso del estudiante
+        sesiones = SesionClase.objects.filter(
+            curso_materia__curso=instance.curso
+        )
+
+        nuevas_asistencias = []
+
+        for sesion in sesiones:
+            nuevas_asistencias.append(
+                Asistencia(
+                    sesion=sesion,
+                    estudiante=instance,
+                    estado='AUSENTE' 
+                )
+            )
+
+        Asistencia.objects.bulk_create(nuevas_asistencias)
