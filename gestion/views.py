@@ -165,7 +165,7 @@ def tomar_asistencia(request, sesion_id):
             val_calificacion = request.POST.get(calificacion_key, '')
             if val_calificacion.isdigit():
                 nota = int(val_calificacion)
-                asistencia.calificacion = max(20, min(100, round(nota / 10) * 10))
+                asistencia.calificacion = max(20, min(100, nota))
             else:
                 asistencia.calificacion = None
 
@@ -174,7 +174,7 @@ def tomar_asistencia(request, sesion_id):
             val_calificacion_tarea = request.POST.get(calificacion_tarea_key, '')
             if val_calificacion_tarea.isdigit():
                 nota_tarea = int(val_calificacion_tarea)
-                asistencia.calificacion_tarea = max(20, min(100, round(nota_tarea / 10) * 10))
+                asistencia.calificacion_tarea = max(20, min(100, nota_tarea))
                 asistencia.entrego_tarea = True
             else:
                 asistencia.calificacion_tarea = None
@@ -189,7 +189,7 @@ def tomar_asistencia(request, sesion_id):
             val_calif_quiz = request.POST.get(calif_quiz_key, '')
             if val_calif_quiz.isdigit():
                 nota_quiz = int(val_calif_quiz)
-                asistencia.calificacion_quiz = max(20, min(100, round(nota_quiz / 10) * 10))
+                asistencia.calificacion_quiz = max(20, min(100, nota_quiz))
                 asistencia.realizo_quiz = True
             else:
                 asistencia.calificacion_quiz = None
@@ -204,7 +204,7 @@ def tomar_asistencia(request, sesion_id):
             val_calif_examen = request.POST.get(calif_examen_key, '')
             if val_calif_examen.isdigit():
                 nota_examen = int(val_calif_examen)
-                asistencia.calificacion_examen = max(20, min(100, round(nota_examen / 10) * 10))
+                asistencia.calificacion_examen = max(20, min(100, nota_examen))
                 asistencia.realizo_examen = True
             else:
                 asistencia.calificacion_examen = None

@@ -3,55 +3,67 @@
 {% block title %}Asistencia - Clase {{ sesion.numero_clase }}{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-6 sm:px-0">
-    
-    <div class="bg-white rounded-3xl shadow-lg border border-slate-100 p-8 mb-8 relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div class="absolute -right-10 -top-10 w-40 h-40 bg-blue-50 rounded-full opacity-50 z-0"></div>
-        <div class="absolute right-20 -bottom-10 w-24 h-24 bg-indigo-50 rounded-full opacity-50 z-0"></div>
+<div class="space-y-5 pb-28">
 
-        <div class="relative z-10">
-            <div class="flex items-center gap-3 mb-2">
-                <span class="bg-blue-100 text-blue-700 text-xs font-black px-3 py-1 rounded-lg uppercase tracking-wider">
-                    Clase #{{ sesion.numero_clase }}
-                </span>
-                <span class="text-slate-500 text-sm font-medium flex items-center gap-1">
-                    <i class="fa-regular fa-calendar"></i> {{ sesion.fecha|date:"d M Y" }}
-                </span>
+    <!-- Header -->
+    <div>
+        <a href="{% url 'gestion:reporte_curso' sesion.curso_materia.id %}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-slate-700 transition-colors mb-4">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            Volver a reportes
+        </a>
+
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-2 mb-1.5">
+                    <span class="text-[10px] font-semibold uppercase tracking-widest text-slate-400">Clase {{ sesion.numero_clase }}</span>
+                    <span class="text-slate-200">·</span>
+                    <span class="text-[10px] text-slate-400 flex items-center gap-1">
+                        <i class="fa-regular fa-calendar text-[9px]"></i>
+                        {{ sesion.fecha|date:"d M Y" }}
+                    </span>
+                </div>
+                <h1 class="font-display text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight leading-none">
+                    {{ sesion.curso_materia.curso }} · {{ sesion.curso_materia.materia }}
+                </h1>
+                {% if sesion.tema %}
+                <p class="text-slate-400 mt-1.5 text-sm">{{ sesion.tema }}</p>
+                {% endif %}
             </div>
-            <h2 class="text-3xl font-black text-slate-800 mb-1">
-                {{ sesion.curso_materia.curso }} · {{ sesion.curso_materia.materia }}
-            </h2>
-            <p class="text-lg text-slate-600 font-medium">{{ sesion.tema }}</p>
-        </div>
-        
-        <div class="relative z-10 flex flex-wrap gap-2 text-right">
-            {% if sesion.actividad_realizada %}
-            <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold bg-green-50 text-green-700 border border-green-200 shadow-sm">
-                <i class="fa-solid fa-laptop-code mr-2"></i> Actividad
-            </span>
-            {% endif %}
-            {% if sesion.realizo_quiz %}
-            <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold bg-orange-50 text-orange-700 border border-orange-200 shadow-sm">
-                <i class="fa-solid fa-file-signature mr-2"></i> Quiz
-            </span>
-            {% endif %}
-            {% if sesion.realizo_examen %}
-            <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold bg-rose-50 text-rose-700 border border-rose-200 shadow-sm">
-                <i class="fa-solid fa-graduation-cap mr-2"></i> Examen
-            </span>
-            {% endif %}
+
+            <!-- Tags de evaluación -->
+            <div class="flex flex-wrap gap-1.5 shrink-0">
+                {% if sesion.actividad_realizada %}
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 border border-amber-100 text-xs font-semibold">
+                    <i class="fa-solid fa-bolt text-[10px]"></i> Actividad
+                </span>
+                {% endif %}
+                {% if sesion.realizo_quiz %}
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-orange-50 text-orange-700 border border-orange-100 text-xs font-semibold">
+                    <i class="fa-solid fa-file-signature text-[10px]"></i> Quiz
+                </span>
+                {% endif %}
+                {% if sesion.realizo_examen %}
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 border border-rose-100 text-xs font-semibold">
+                    <i class="fa-solid fa-graduation-cap text-[10px]"></i> Examen
+                </span>
+                {% endif %}
+            </div>
         </div>
     </div>
 
+    <!-- Divider -->
+    <div class="border-t border-slate-200"></div>
+
+    <!-- Recordatorio tarea -->
     {% if tarea_pendiente %}
-    <div class="bg-gradient-to-r from-purple-50 to-white border border-purple-100 p-5 mb-8 rounded-2xl flex items-start gap-4 shadow-sm relative overflow-hidden">
-        <div class="absolute left-0 top-0 bottom-0 w-1 bg-purple-500"></div>
-        <div class="bg-white p-2 rounded-xl shadow-sm">
-            <i class="fa-solid fa-clipboard-list text-purple-600 text-xl"></i>
+    <div class="bg-white border border-violet-100 rounded-xl p-4 flex items-start gap-3 relative overflow-hidden">
+        <div class="absolute left-0 top-0 bottom-0 w-0.5 bg-violet-400 rounded-r"></div>
+        <div class="h-8 w-8 shrink-0 rounded-lg bg-violet-50 border border-violet-100 flex items-center justify-center">
+            <i class="fa-solid fa-clipboard-list text-violet-500 text-sm"></i>
         </div>
         <div>
-            <h3 class="text-xs font-bold text-purple-900 uppercase tracking-wider mb-1">Revisar Tarea Hoy (De C-{{ clase_anterior.numero_clase }})</h3>
-            <p class="text-base text-slate-700 font-medium italic">"{{ tarea_pendiente }}"</p>
+            <p class="text-[10px] font-semibold uppercase tracking-wider text-violet-400 mb-0.5">Revisar tarea hoy · C-{{ clase_anterior.numero_clase }}</p>
+            <p class="text-sm text-slate-700 italic">"{{ tarea_pendiente }}"</p>
         </div>
     </div>
     {% endif %}
@@ -59,90 +71,84 @@
     <form method="POST" id="form-asistencia" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <div class="mb-6">
-            <div class="mb-4 flex justify-end">
-                <button type="button" onclick="abrirModalEstudiante()"
-                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-xl shadow">
-                    <i class="fa-solid fa-user-plus mr-2"></i> Nuevo Estudiante
-                </button>
-            </div>
-
-            <div class="relative">
-                <input 
-                    type="text" 
+        <!-- Toolbar estudiantes -->
+        <div class="flex items-center justify-between gap-3 flex-wrap mb-4">
+            <div class="relative flex-1 max-w-xs">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 text-xs"></i>
+                <input
+                    type="text"
                     id="buscador-estudiantes"
-                    placeholder="Buscar estudiante por nombre o apellido..."
-                    class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 pl-11 focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="Buscar estudiante…"
+                    autocomplete="off"
+                    class="w-full bg-white border border-slate-200 rounded-lg pl-8 pr-3 py-2 text-sm text-slate-700 placeholder-slate-300 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition shadow-sm"
                 >
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
             </div>
+            <button type="button" onclick="abrirModalEstudiante()"
+                class="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 transition shadow-sm">
+                <i class="fa-solid fa-user-plus text-xs text-slate-400"></i>
+                Nuevo estudiante
+            </button>
         </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-10 items-start">
+
+        <!-- Grid estudiantes -->
+        <div class="grid gap-3 mb-6" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr))">
             {% for asistencia in asistencias %}
-            <div class="bg-white rounded-2xl shadow-sm tarjeta-estudiante hover:shadow-lg border border-slate-200 
-                 transition-all duration-300 overflow-hidden flex flex-col" 
+            <div class="bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col hover:border-slate-300 hover:shadow-sm transition-all tarjeta-estudiante"
                  data-nombre="{{ asistencia.estudiante.nombres }} {{ asistencia.estudiante.apellidos }}">
-                
-                <div class="p-4 border-b border-slate-50 bg-slate-50/50 flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="h-10 w-10 rounded-full overflow-hidden bg-white border border-slate-200 flex-shrink-0 shadow-sm">
+
+                <!-- Student header -->
+                <div class="px-3.5 py-3 flex items-center justify-between gap-2 border-b border-slate-100 bg-slate-50/50">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <div class="h-8 w-8 rounded-lg overflow-hidden bg-white border border-slate-200 flex-shrink-0 {% if asistencia.estudiante.foto %}cursor-pointer hover:ring-2 hover:ring-indigo-300 transition{% endif %}"
+                             {% if asistencia.estudiante.foto %}onclick="verFotoEstudiante('{{ asistencia.estudiante.foto.url }}', '{{ asistencia.estudiante.nombres }} {{ asistencia.estudiante.apellidos }}')" title="Ver foto"{% endif %}>
                             {% if asistencia.estudiante.foto %}
                                 <img src="{{ asistencia.estudiante.foto.url }}" alt="Foto" class="h-full w-full object-cover">
                             {% else %}
                                 <div class="h-full w-full flex items-center justify-center text-slate-300 bg-slate-100">
-                                    <i class="fa-solid fa-user"></i>
+                                    <i class="fa-solid fa-user text-xs"></i>
                                 </div>
                             {% endif %}
                         </div>
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-sm leading-tight">{{ asistencia.estudiante.apellidos }}</h3>
-                            <p class="text-slate-500 text-[11px] font-medium">{{ asistencia.estudiante.nombres }}</p>
+                        <div class="min-w-0">
+                            <p class="font-semibold text-slate-800 text-xs leading-tight truncate">{{ asistencia.estudiante.apellidos }}</p>
+                            <p class="text-slate-400 text-[10px] truncate">{{ asistencia.estudiante.nombres }}</p>
                         </div>
                     </div>
 
-                    <!-- Botón anotación -->
-                    <button type="button"
-                        id="btn-anotacion-{{ asistencia.estudiante.id }}"
-                        onclick="abrirModalAnotacion('{{ asistencia.estudiante.id }}', '{{ asistencia.estudiante.nombres }} {{ asistencia.estudiante.apellidos }}')"
-                        class="p-2 rounded-lg transition 
-                        {% if asistencia.anotaciones_clase %}
-                            bg-yellow-100 text-yellow-600
-                        {% else %}
-                            text-slate-400 hover:text-yellow-600 hover:bg-yellow-50
-                        {% endif %}">
-                        
-                        <i class="fa-solid fa-comment-dots"></i>
-                    </button>
-                    
-                    <div class="relative">
-                        <button type="button" onclick="toggleMenu('{{ asistencia.estudiante.id }}')"
-                            class="text-slate-400 hover:text-slate-700 p-2 rounded-lg hover:bg-slate-100 transition">
-                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                    <div class="flex items-center gap-1 shrink-0">
+                        <!-- Anotación -->
+                        <button type="button"
+                            id="btn-anotacion-{{ asistencia.estudiante.id }}"
+                            onclick="abrirModalAnotacion('{{ asistencia.estudiante.id }}', '{{ asistencia.estudiante.nombres }} {{ asistencia.estudiante.apellidos }}')"
+                            class="h-7 w-7 rounded-lg flex items-center justify-center transition
+                            {% if asistencia.anotaciones_clase %}bg-amber-100 text-amber-500{% else %}text-slate-300 hover:text-amber-500 hover:bg-amber-50{% endif %}">
+                            <i class="fa-solid fa-comment-dots text-xs"></i>
                         </button>
 
-                        <div id="menu-{{ asistencia.estudiante.id }}"
-                            class="hidden absolute right-0 mt-2 w-44 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden">
-
-                            <!-- Editar -->
-                            <button type="button"
-                                onclick="editarEstudiante('{{ asistencia.estudiante.id }}', '{{ asistencia.estudiante.nombres }}', '{{ asistencia.estudiante.apellidos }}')"
-                                class="w-full text-left px-4 py-2 text-sm hover:bg-blue-50 flex items-center gap-2">
-                                <i class="fa-solid fa-pen text-blue-500"></i>
-                                Editar
+                        <!-- Menú -->
+                        <div class="relative">
+                            <button type="button" onclick="toggleMenu('{{ asistencia.estudiante.id }}')"
+                                class="h-7 w-7 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition">
+                                <i class="fa-solid fa-ellipsis-vertical text-xs"></i>
                             </button>
-
-                            <!-- Inactivar -->
-                            <button type="button"
-                                onclick="inactivarEstudiante('{{ asistencia.estudiante.id }}')"
-                                class="w-full text-left px-4 py-2 text-sm hover:bg-red-50 flex items-center gap-2">
-                                <i class="fa-solid fa-user-slash text-red-500"></i>
-                                Inactivar
-                            </button>
+                            <div id="menu-{{ asistencia.estudiante.id }}"
+                                class="hidden absolute right-0 mt-1 w-40 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden py-1">
+                                <button type="button"
+                                    onclick="editarEstudiante('{{ asistencia.estudiante.id }}', '{{ asistencia.estudiante.nombres }}', '{{ asistencia.estudiante.apellidos }}')"
+                                    class="w-full text-left px-3.5 py-2 text-xs font-medium hover:bg-slate-50 flex items-center gap-2 text-slate-600">
+                                    <i class="fa-solid fa-pen text-slate-400 text-[10px]"></i> Editar
+                                </button>
+                                <button type="button"
+                                    onclick="inactivarEstudiante('{{ asistencia.estudiante.id }}')"
+                                    class="w-full text-left px-3.5 py-2 text-xs font-medium hover:bg-red-50 flex items-center gap-2 text-red-500">
+                                    <i class="fa-solid fa-user-slash text-[10px]"></i> Inactivar
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Historial oculto -->
                 <div id="historial_oculto_{{ asistencia.estudiante.id }}" class="hidden">
                     {% if asistencia.anotaciones_clase %}
                         <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Registros previos en esta clase</h4>
@@ -159,7 +165,7 @@
                                     data-id="{{ anotacion.id }}"
                                     onclick="borrarAnotacionFlash(event, this.getAttribute('data-id'))"
                                     class="text-red-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded transition-colors"
-                                    title="Eliminar permanentemente">
+                                    title="Eliminar">
                                     <i class="fa-solid fa-trash-can text-xs"></i>
                                 </button>
                             </div>
@@ -168,295 +174,324 @@
                     {% endif %}
                 </div>
 
-                <div class="p-4 flex flex-col flex-grow space-y-3">
-                    <div class="flex bg-slate-100 rounded-xl p-1 shadow-inner">
+                <!-- Body -->
+                <div class="p-3.5 flex flex-col flex-grow gap-3">
+
+                    <!-- Asistencia toggle -->
+                    <div class="flex bg-slate-100 rounded-lg p-0.5 gap-0.5">
                         <label class="flex-1 text-center cursor-pointer">
                             <input type="radio" name="estado_{{ asistencia.id }}" value="PRESENTE" class="peer hidden" onchange="bloquearActividades('{{ asistencia.id }}', this.value)" {% if asistencia.estado == 'PRESENTE' %}checked{% endif %}>
-                            <div class="peer-checked:bg-green-500 peer-checked:text-white peer-checked:shadow text-xs font-bold text-slate-500 py-2 rounded-lg transition-all">
-                                P
-                            </div>
+                            <div class="peer-checked:bg-emerald-500 peer-checked:text-white text-[11px] font-bold text-slate-400 py-1.5 rounded-md transition-all">P</div>
                         </label>
                         <label class="flex-1 text-center cursor-pointer">
                             <input type="radio" name="estado_{{ asistencia.id }}" value="AUSENTE" class="peer hidden" onchange="bloquearActividades('{{ asistencia.id }}', this.value)" {% if asistencia.estado == 'AUSENTE' %}checked{% endif %}>
-                            <div class="peer-checked:bg-red-500 peer-checked:text-white peer-checked:shadow text-xs font-bold text-slate-500 py-2 rounded-lg transition-all">
-                                A
-                            </div>
+                            <div class="peer-checked:bg-red-500 peer-checked:text-white text-[11px] font-bold text-slate-400 py-1.5 rounded-md transition-all">A</div>
                         </label>
                         <label class="flex-1 text-center cursor-pointer">
                             <input type="radio" name="estado_{{ asistencia.id }}" value="EXCUSADO" class="peer hidden" onchange="bloquearActividades('{{ asistencia.id }}', this.value)" {% if asistencia.estado == 'EXCUSADO' %}checked{% endif %}>
-                            <div class="peer-checked:bg-yellow-500 peer-checked:text-white peer-checked:shadow text-xs font-bold text-slate-500 py-2 rounded-lg transition-all">
-                                E
-                            </div>
+                            <div class="peer-checked:bg-amber-400 peer-checked:text-white text-[11px] font-bold text-slate-400 py-1.5 rounded-md transition-all">E</div>
                         </label>
                     </div>
 
-                    <div class="space-y-2 mt-auto">
+                    <!-- Evaluaciones -->
+                    <div class="space-y-2">
+
                         {% if sesion.actividad_realizada %}
-                        <div class="bg-blue-50/50 border border-blue-100 rounded-xl p-2.5 transition-colors hover:bg-blue-50">
-                            <div class="flex items-center justify-between">
-                                <label class="flex items-center cursor-pointer">
-                                    <input type="checkbox" id="actividad_{{ asistencia.id }}" name="actividad_{{ asistencia.id }}" class="form-checkbox h-4 w-4 text-blue-600 rounded border-slate-300 disabled:opacity-50 disabled:cursor-not-allowed" {% if asistencia.completo_actividad %}checked{% endif %}>
-                                    <span class="ml-2 text-xs text-blue-900 font-bold">Actividad</span>
+                        <div class="border border-slate-100 rounded-lg p-2.5 bg-slate-50/50">
+                            <div class="flex items-center justify-between gap-2">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="actividad_{{ asistencia.id }}" name="actividad_{{ asistencia.id }}"
+                                        class="h-3.5 w-3.5 rounded border-slate-300 text-indigo-600 disabled:opacity-40"
+                                        {% if asistencia.completo_actividad %}checked{% endif %}>
+                                    <span class="text-xs font-semibold text-slate-600 flex items-center gap-1">
+                                        <i class="fa-solid fa-bolt text-amber-400 text-[9px]"></i> Actividad
+                                    </span>
                                 </label>
-                                
-                                <div class="flex items-center gap-1.5" id="contenedor_foto_{{ asistencia.id }}">
-                                    <button type="button" onclick="document.getElementById('panel_evaluacion_{{ asistencia.id }}').classList.toggle('hidden')" class="text-[10px] text-blue-700 bg-white hover:bg-blue-100 border border-blue-200 py-1 px-2 rounded-lg font-bold transition-colors shadow-sm">
+                                <div class="flex items-center gap-1" id="contenedor_foto_{{ asistencia.id }}">
+                                    <button type="button"
+                                        onclick="toggleNota('panel_evaluacion_{{ asistencia.id }}', 'calificacion_{{ asistencia.id }}')"
+                                        class="text-[10px] text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-md font-semibold hover:bg-slate-50 transition">
                                         Nota
                                     </button>
-
-                                    <label id="label_foto_{{ asistencia.id }}" class="cursor-pointer text-[10px] font-bold py-1 px-2 rounded-lg transition-all duration-300 flex items-center shadow-sm {% if asistencia.evidencia_foto %} bg-green-500 text-white border-transparent {% else %} bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 {% endif %}">
-                                        <i class="fa-solid {% if asistencia.evidencia_foto %}fa-check{% else %}fa-camera{% endif %}"></i> 
+                                    <label id="label_foto_{{ asistencia.id }}"
+                                        class="cursor-pointer text-[10px] font-semibold py-0.5 px-2 rounded-md transition-all flex items-center
+                                        {% if asistencia.evidencia_foto %}bg-emerald-500 text-white{% else %}bg-white text-slate-400 border border-slate-200 hover:bg-slate-50{% endif %}">
+                                        <i class="fa-solid {% if asistencia.evidencia_foto %}fa-check{% else %}fa-camera{% endif %} text-[10px]"></i>
                                         <input type="file" id="foto_{{ asistencia.id }}" name="foto_{{ asistencia.id }}" accept="image/*" capture="environment" class="hidden" onchange="confirmarFoto('{{ asistencia.id }}')">
                                     </label>
                                     <input type="checkbox" name="borrar_foto_{{ asistencia.id }}" id="input_borrar_foto_{{ asistencia.id }}" class="hidden">
-
                                     {% if asistencia.evidencia_foto %}
-                                    <div id="acciones_foto_{{ asistencia.id }}" class="flex items-center gap-1.5 pl-1.5 border-l border-blue-200">
-                                        <a href="{{ asistencia.evidencia_foto.url }}" target="_blank" class="text-blue-500 hover:text-blue-700 p-1" title="Ver foto">
-                                            <i class="fa-solid fa-eye text-xs"></i>
+                                    <div id="acciones_foto_{{ asistencia.id }}" class="flex items-center gap-1 pl-1 border-l border-slate-200">
+                                        <a href="{{ asistencia.evidencia_foto.url }}" target="_blank" class="text-slate-400 hover:text-indigo-500 transition" title="Ver foto">
+                                            <i class="fa-solid fa-eye text-[10px]"></i>
                                         </a>
-                                        <button type="button" onclick="eliminarFotoVisual('{{ asistencia.id }}')" class="text-red-400 hover:text-red-600 p-1" title="Eliminar foto">
-                                            <i class="fa-solid fa-trash-can text-xs"></i>
+                                        <button type="button" onclick="eliminarFotoVisual('{{ asistencia.id }}')" class="text-slate-400 hover:text-red-500 transition" title="Eliminar">
+                                            <i class="fa-solid fa-trash-can text-[10px]"></i>
                                         </button>
                                     </div>
                                     {% endif %}
                                 </div>
                             </div>
-
-                            <div id="panel_evaluacion_{{ asistencia.id }}" class="{% if not asistencia.calificacion and not asistencia.comentario_actividad %}hidden{% endif %} mt-2 pt-2 border-t border-blue-100/50">
-                                <div class="flex gap-2 items-center mb-1.5">
-                                    <label class="text-[10px] font-bold text-blue-800">Calif:</label>
-                                    <input type="number" 
-                                           name="calificacion_{{ asistencia.id }}" 
-                                           value="{{ asistencia.calificacion|default_if_none:'' }}" 
-                                           min="20" max="100" step="10"
-                                           oninput="if(this.value) { 
-                                               let chk = document.getElementById('actividad_{{ asistencia.id }}'); 
-                                               if(chk && !chk.disabled) chk.checked = true; 
-                                           }"
-                                           class="w-16 p-1 text-xs border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                            <div id="panel_evaluacion_{{ asistencia.id }}" class="mt-2 pt-2 border-t border-slate-100 space-y-1.5">
+                                <div class="flex items-center gap-2">
+                                    <label class="text-[10px] font-semibold text-slate-500">Calif.</label>
+                                    <input type="number" name="calificacion_{{ asistencia.id }}" value="{{ asistencia.calificacion|default_if_none:'' }}"
+                                        min="20" max="100" step="1"
+                                        oninput="if(this.value){ let c=document.getElementById('actividad_{{ asistencia.id }}'); if(c&&!c.disabled) c.checked=true; }"
+                                        class="w-16 px-2 py-1 text-xs border border-slate-200 rounded-md outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400">
                                 </div>
-                                <textarea name="comentario_{{ asistencia.id }}" rows="1" placeholder="Sugerencias..." class="w-full p-1.5 text-[11px] border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-none">{{ asistencia.comentario_actividad|default_if_none:'' }}</textarea>
+                                <textarea name="comentario_{{ asistencia.id }}" rows="1" placeholder="Observaciones…"
+                                    class="w-full px-2 py-1.5 text-[11px] border border-slate-200 rounded-md outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 resize-none bg-white">{{ asistencia.comentario_actividad|default_if_none:'' }}</textarea>
                             </div>
                         </div>
                         {% endif %}
 
                         {% if tarea_pendiente %}
-                        <div class="bg-green-50/50 border border-green-100 rounded-xl p-2.5 transition-colors hover:bg-green-50">
-                            <div class="flex items-center justify-between">
-                                <label class="flex items-center cursor-pointer">
-                                    <input type="checkbox" id="tarea_{{ asistencia.id }}" name="tarea_{{ asistencia.id }}" class="form-checkbox h-4 w-4 text-green-600 rounded border-slate-300 disabled:opacity-50 disabled:cursor-not-allowed" {% if asistencia.entrego_tarea %}checked{% endif %}>
-                                    <span class="ml-2 text-xs text-green-900 font-bold">Tarea</span>
+                        <div class="border border-slate-100 rounded-lg p-2.5 bg-slate-50/50">
+                            <div class="flex items-center justify-between gap-2">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="tarea_{{ asistencia.id }}" name="tarea_{{ asistencia.id }}"
+                                        class="h-3.5 w-3.5 rounded border-slate-300 text-violet-600 disabled:opacity-40"
+                                        {% if asistencia.entrego_tarea %}checked{% endif %}>
+                                    <span class="text-xs font-semibold text-slate-600 flex items-center gap-1">
+                                        <i class="fa-solid fa-house text-violet-400 text-[9px]"></i> Tarea
+                                    </span>
                                 </label>
-                                <button type="button" onclick="document.getElementById('panel_tarea_{{ asistencia.id }}').classList.toggle('hidden')" class="text-[10px] text-green-700 bg-white hover:bg-green-100 border border-green-200 py-1 px-2 rounded-lg font-bold transition-colors shadow-sm">
+                                <button type="button" onclick="toggleNota('panel_tarea_{{ asistencia.id }}', 'calificacion_tarea_{{ asistencia.id }}')"
+                                    class="text-[10px] text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-md font-semibold hover:bg-slate-50 transition">
                                     Nota
                                 </button>
                             </div>
-                            <div id="panel_tarea_{{ asistencia.id }}" class="{% if not asistencia.calificacion_tarea and not asistencia.comentario_tarea %}hidden{% endif %} mt-2 pt-2 border-t border-green-100/50">
-                                <div class="flex gap-2 items-center mb-1.5">
-                                    <label class="text-[10px] font-bold text-green-800">Calif:</label>
-                                    <input type="number" name="calificacion_tarea_{{ asistencia.id }}" value="{{ asistencia.calificacion_tarea|default_if_none:'' }}" min="20" max="100" step="10" oninput="if(this.value) { let chk = document.getElementById('tarea_{{ asistencia.id }}'); if(chk && !chk.disabled) chk.checked = true; }" class="w-16 p-1 text-xs border border-green-200 rounded-md focus:ring-2 focus:ring-green-500 outline-none">
+                            <div id="panel_tarea_{{ asistencia.id }}" class="mt-2 pt-2 border-t border-slate-100 space-y-1.5">
+                                <div class="flex items-center gap-2">
+                                    <label class="text-[10px] font-semibold text-slate-500">Calif.</label>
+                                    <input type="number" name="calificacion_tarea_{{ asistencia.id }}" value="{{ asistencia.calificacion_tarea|default_if_none:'' }}"
+                                        min="20" max="100" step="1"
+                                        oninput="if(this.value){ let c=document.getElementById('tarea_{{ asistencia.id }}'); if(c&&!c.disabled) c.checked=true; }"
+                                        class="w-16 px-2 py-1 text-xs border border-slate-200 rounded-md outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400">
                                 </div>
-                                <textarea name="comentario_tarea_{{ asistencia.id }}" rows="1" placeholder="Observaciones..." class="w-full p-1.5 text-[11px] border border-green-200 rounded-md focus:ring-2 focus:ring-green-500 outline-none resize-none">{{ asistencia.comentario_tarea|default_if_none:'' }}</textarea>
+                                <textarea name="comentario_tarea_{{ asistencia.id }}" rows="1" placeholder="Observaciones…"
+                                    class="w-full px-2 py-1.5 text-[11px] border border-slate-200 rounded-md outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 resize-none bg-white">{{ asistencia.comentario_tarea|default_if_none:'' }}</textarea>
                             </div>
                         </div>
                         {% endif %}
 
                         {% if sesion.realizo_quiz %}
-                        <div class="bg-orange-50/50 border border-orange-100 rounded-xl p-2.5 transition-colors hover:bg-orange-50">
-                            <div class="flex items-center justify-between">
-                                <label class="flex items-center cursor-pointer">
-                                    <input type="checkbox" id="quiz_{{ asistencia.id }}" name="quiz_{{ asistencia.id }}" class="form-checkbox h-4 w-4 text-orange-500 rounded border-slate-300 disabled:opacity-50 disabled:cursor-not-allowed" {% if asistencia.realizo_quiz %}checked{% endif %}>
-                                    <span class="ml-2 text-xs text-orange-900 font-bold">Quiz</span>
+                        <div class="border border-slate-100 rounded-lg p-2.5 bg-slate-50/50">
+                            <div class="flex items-center justify-between gap-2">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="quiz_{{ asistencia.id }}" name="quiz_{{ asistencia.id }}"
+                                        class="h-3.5 w-3.5 rounded border-slate-300 text-orange-500 disabled:opacity-40"
+                                        {% if asistencia.realizo_quiz %}checked{% endif %}>
+                                    <span class="text-xs font-semibold text-slate-600 flex items-center gap-1">
+                                        <i class="fa-solid fa-file-signature text-orange-400 text-[9px]"></i> Quiz
+                                    </span>
                                 </label>
-                                <button type="button" onclick="document.getElementById('panel_quiz_{{ asistencia.id }}').classList.toggle('hidden')" class="text-[10px] text-orange-700 bg-white hover:bg-orange-100 border border-orange-200 py-1 px-2 rounded-lg font-bold transition-colors shadow-sm">
+                                <button type="button" onclick="toggleNota('panel_quiz_{{ asistencia.id }}', 'calificacion_quiz_{{ asistencia.id }}')"
+                                    class="text-[10px] text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-md font-semibold hover:bg-slate-50 transition">
                                     Nota
                                 </button>
                             </div>
-                            <div id="panel_quiz_{{ asistencia.id }}" class="{% if not asistencia.calificacion_quiz and not asistencia.comentario_quiz %}hidden{% endif %} mt-2 pt-2 border-t border-orange-100/50">
-                                <div class="flex gap-2 items-center mb-1.5">
-                                    <label class="text-[10px] font-bold text-orange-800">Calif:</label>
-                                    <input type="number" name="calificacion_quiz_{{ asistencia.id }}" value="{{ asistencia.calificacion_quiz|default_if_none:'' }}" min="20" max="100" step="10" oninput="if(this.value) { let chk = document.getElementById('quiz_{{ asistencia.id }}'); if(chk && !chk.disabled) chk.checked = true; }" class="w-16 p-1 text-xs border border-orange-200 rounded-md focus:ring-2 focus:ring-orange-500 outline-none">
+                            <div id="panel_quiz_{{ asistencia.id }}" class="mt-2 pt-2 border-t border-slate-100 space-y-1.5">
+                                <div class="flex items-center gap-2">
+                                    <label class="text-[10px] font-semibold text-slate-500">Calif.</label>
+                                    <input type="number" name="calificacion_quiz_{{ asistencia.id }}" value="{{ asistencia.calificacion_quiz|default_if_none:'' }}"
+                                        min="20" max="100" step="1"
+                                        oninput="if(this.value){ let c=document.getElementById('quiz_{{ asistencia.id }}'); if(c&&!c.disabled) c.checked=true; }"
+                                        class="w-16 px-2 py-1 text-xs border border-slate-200 rounded-md outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400">
                                 </div>
-                                <textarea name="comentario_quiz_{{ asistencia.id }}" rows="1" placeholder="Observaciones..." class="w-full p-1.5 text-[11px] border border-orange-200 rounded-md focus:ring-2 focus:ring-orange-500 outline-none resize-none">{{ asistencia.comentario_quiz|default_if_none:'' }}</textarea>
+                                <textarea name="comentario_quiz_{{ asistencia.id }}" rows="1" placeholder="Observaciones…"
+                                    class="w-full px-2 py-1.5 text-[11px] border border-slate-200 rounded-md outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 resize-none bg-white">{{ asistencia.comentario_quiz|default_if_none:'' }}</textarea>
                             </div>
                         </div>
                         {% endif %}
 
                         {% if sesion.realizo_examen %}
-                        <div class="bg-rose-50/50 border border-rose-100 rounded-xl p-2.5 transition-colors hover:bg-rose-50">
-                            <div class="flex items-center justify-between">
-                                <label class="flex items-center cursor-pointer">
-                                    <input type="checkbox" id="examen_{{ asistencia.id }}" name="examen_{{ asistencia.id }}" class="form-checkbox h-4 w-4 text-rose-600 rounded border-slate-300 disabled:opacity-50 disabled:cursor-not-allowed" {% if asistencia.realizo_examen %}checked{% endif %}>
-                                    <span class="ml-2 text-xs text-rose-900 font-bold">Examen</span>
+                        <div class="border border-slate-100 rounded-lg p-2.5 bg-slate-50/50">
+                            <div class="flex items-center justify-between gap-2">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="examen_{{ asistencia.id }}" name="examen_{{ asistencia.id }}"
+                                        class="h-3.5 w-3.5 rounded border-slate-300 text-rose-500 disabled:opacity-40"
+                                        {% if asistencia.realizo_examen %}checked{% endif %}>
+                                    <span class="text-xs font-semibold text-slate-600 flex items-center gap-1">
+                                        <i class="fa-solid fa-graduation-cap text-rose-400 text-[9px]"></i> Examen
+                                    </span>
                                 </label>
-                                <button type="button" onclick="document.getElementById('panel_examen_{{ asistencia.id }}').classList.toggle('hidden')" class="text-[10px] text-rose-700 bg-white hover:bg-rose-100 border border-rose-200 py-1 px-2 rounded-lg font-bold transition-colors shadow-sm">
+                                <button type="button" onclick="toggleNota('panel_examen_{{ asistencia.id }}', 'calificacion_examen_{{ asistencia.id }}')"
+                                    class="text-[10px] text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-md font-semibold hover:bg-slate-50 transition">
                                     Nota
                                 </button>
                             </div>
-                            <div id="panel_examen_{{ asistencia.id }}" class="{% if not asistencia.calificacion_examen and not asistencia.comentario_examen %}hidden{% endif %} mt-2 pt-2 border-t border-rose-100/50">
-                                <div class="flex gap-2 items-center mb-1.5">
-                                    <label class="text-[10px] font-bold text-rose-800">Calif:</label>
-                                    <input type="number" name="calificacion_examen_{{ asistencia.id }}" value="{{ asistencia.calificacion_examen|default_if_none:'' }}" min="20" max="100" step="10" oninput="if(this.value) { let chk = document.getElementById('examen_{{ asistencia.id }}'); if(chk && !chk.disabled) chk.checked = true; }" class="w-16 p-1 text-xs border border-rose-200 rounded-md focus:ring-2 focus:ring-rose-500 outline-none">
+                            <div id="panel_examen_{{ asistencia.id }}" class="mt-2 pt-2 border-t border-slate-100 space-y-1.5">
+                                <div class="flex items-center gap-2">
+                                    <label class="text-[10px] font-semibold text-slate-500">Calif.</label>
+                                    <input type="number" name="calificacion_examen_{{ asistencia.id }}" value="{{ asistencia.calificacion_examen|default_if_none:'' }}"
+                                        min="20" max="100" step="1"
+                                        oninput="if(this.value){ let c=document.getElementById('examen_{{ asistencia.id }}'); if(c&&!c.disabled) c.checked=true; }"
+                                        class="w-16 px-2 py-1 text-xs border border-slate-200 rounded-md outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400">
                                 </div>
-                                <textarea name="comentario_examen_{{ asistencia.id }}" rows="1" placeholder="Observaciones..." class="w-full p-1.5 text-[11px] border border-rose-200 rounded-md focus:ring-2 focus:ring-rose-500 outline-none resize-none">{{ asistencia.comentario_examen|default_if_none:'' }}</textarea>
+                                <textarea name="comentario_examen_{{ asistencia.id }}" rows="1" placeholder="Observaciones…"
+                                    class="w-full px-2 py-1.5 text-[11px] border border-slate-200 rounded-md outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 resize-none bg-white">{{ asistencia.comentario_examen|default_if_none:'' }}</textarea>
                             </div>
                         </div>
                         {% endif %}
+
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
 
-        <div class="bg-white rounded-3xl shadow-sm hover:shadow-md border border-slate-200 p-6 mb-24 transition-shadow">
-            <h3 class="text-lg font-black text-slate-800 mb-2 flex items-center">
-                <div class="bg-blue-100 text-blue-600 h-8 w-8 rounded-lg flex items-center justify-center mr-3">
-                    <i class="fa-solid fa-house-laptop"></i>
+        <!-- Tarea para casa -->
+        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+            <div class="flex items-center gap-2.5 mb-3">
+                <div class="h-8 w-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                    <i class="fa-solid fa-house-laptop text-slate-400 text-sm"></i>
                 </div>
-                Actividad para la casa (Opcional)
-            </h3>
-            <p class="text-sm text-slate-500 mb-4 ml-11">El sistema te recordará evaluar esta tarea en la próxima clase.</p>
-            <textarea name="tarea_asignada" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-4 text-slate-700 outline-none transition-all resize-none" placeholder="Describe la tarea que deben traer para la próxima sesión...">{{ sesion.tarea_asignada|default_if_none:'' }}</textarea>
+                <div>
+                    <p class="text-sm font-semibold text-slate-700">Actividad para la casa</p>
+                    <p class="text-[10px] text-slate-400">Opcional · Se evaluará en la próxima clase</p>
+                </div>
+            </div>
+            <textarea name="tarea_asignada" rows="2"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-700 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition resize-none placeholder-slate-300"
+                placeholder="Describe la tarea que deben traer para la próxima sesión…">{{ sesion.tarea_asignada|default_if_none:'' }}</textarea>
         </div>
 
-        <div class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-slate-200 p-4 z-40 flex justify-center gap-4 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-            <button type="button" onclick="confirmarEliminacion()" class="bg-white text-red-600 hover:bg-red-50 hover:border-red-200 font-bold py-3 px-6 rounded-2xl transition-all flex items-center border border-slate-200 shadow-sm" title="Eliminar clase permanentemente">
-                <i class="fa-solid fa-trash-can mr-2"></i> {% if es_nueva %}Descartar{% else %}Eliminar{% endif %}
-            </button>
-            
-            {% if not es_nueva %}
-            <a href="{% url 'gestion:reporte_curso' sesion.curso_materia.id %}" class="bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold py-3 px-6 rounded-2xl transition-all flex items-center shadow-sm">
-                <i class="fa-solid fa-xmark mr-2"></i> Cancelar
-            </a>
-            {% endif %}
+        <!-- Sticky footer -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-slate-200 px-4 py-3 z-40">
+            <div class="max-w-6xl mx-auto flex items-center justify-between gap-3">
+                <button type="button" onclick="confirmarEliminacion()"
+                    class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-slate-200 text-red-500 text-sm font-semibold hover:bg-red-50 hover:border-red-200 transition shadow-sm">
+                    <i class="fa-solid fa-trash-can text-xs"></i>
+                    {% if es_nueva %}Descartar{% else %}Eliminar{% endif %}
+                </button>
 
-            <button type="button" onclick="abrirModalConfirmacion()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-2xl shadow-lg hover:shadow-blue-500/30 transition-all flex items-center active:scale-95">
-                <i class="fa-solid fa-floppy-disk mr-2"></i> Guardar Clase
-            </button>
+                <div class="flex items-center gap-2">
+                    {% if not es_nueva %}
+                    <a href="{% url 'gestion:reporte_curso' sesion.curso_materia.id %}"
+                        class="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border border-slate-200 text-slate-500 text-sm font-semibold hover:bg-slate-50 transition shadow-sm">
+                        <i class="fa-solid fa-xmark text-xs"></i> Cancelar
+                    </a>
+                    {% endif %}
+                    <button type="button" onclick="abrirModalConfirmacion()"
+                        class="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-900 hover:bg-indigo-600 text-white text-sm font-semibold transition shadow-sm active:scale-[.98]">
+                        <i class="fa-solid fa-floppy-disk text-xs"></i> Guardar clase
+                    </button>
+                </div>
+            </div>
         </div>
+
     </form>
 </div>
 
-<div id="modal-anotacion" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" aria-hidden="true" onclick="cerrarModal()"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-        <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md w-full border border-slate-100">
-            <div class="bg-white px-6 pt-6 pb-4">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="flex-shrink-0 flex items-center justify-center h-14 w-14 rounded-2xl bg-yellow-50 text-yellow-500 border border-yellow-100 shadow-inner">
-                        <i class="fa-solid fa-pen-to-square text-2xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-black text-slate-800" id="modal-title">Nueva Anotación</h3>
-                        <p class="text-sm font-medium text-slate-500" id="modal-estudiante-nombre">Estudiante</p>
-                    </div>
+<!-- ── Modal anotación ── -->
+<div id="modal-anotacion" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4" style="display:none;">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full border border-slate-100 overflow-hidden">
+        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="h-9 w-9 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center">
+                    <i class="fa-solid fa-pen-to-square text-amber-500 text-sm"></i>
                 </div>
-                        
-                <form id="form-anotacion">
-                    <input type="hidden" id="modal-estudiante-id">
-                    
-                    <div class="mb-4">
-                        <label class="block text-slate-700 text-xs font-bold mb-2 uppercase tracking-wider" for="tipo-anotacion">Categoría</label>
-                        <select id="tipo-anotacion" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium appearance-none">
-                            <option value="COMPORTAMIENTO">Comportamiento</option>
-                            <option value="MATERIALES">Falta de materiales</option>
-                            <option value="PARTICIPACION">Participación destacada</option>
-                            <option value="OTRO">Otro</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-slate-700 text-xs font-bold mb-2 uppercase tracking-wider" for="desc-anotacion">Descripción del incidente</label>
-                        <textarea id="desc-anotacion" rows="3" class="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-xl py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" placeholder="Detalla lo ocurrido..."></textarea>
-                    </div>
-                    <div id="contenedor-historial-modal" class="mt-6 border-t border-slate-100 pt-4 hidden"></div>
-                </form>
+                <div>
+                    <p class="font-bold text-slate-900 text-sm">Nueva Anotación</p>
+                    <p class="text-xs text-slate-400" id="modal-estudiante-nombre">Estudiante</p>
+                </div>
             </div>
-            <div class="bg-slate-50 px-6 py-4 flex flex-col sm:flex-row-reverse gap-3 border-t border-slate-100">
-                <button type="button" onclick="guardarAnotacion()" class="w-full sm:w-auto flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all active:scale-95 text-sm" id="btn-guardar-modal">
-                    Guardar
-                </button>
-                <button type="button" onclick="cerrarModal()" class="w-full sm:w-auto bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold py-3 px-6 rounded-xl shadow-sm transition-all text-sm">
-                    Cancelar
-                </button>
+            <button onclick="cerrarModal()" class="h-8 w-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-600 transition">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+        <div class="p-5 space-y-3">
+            <input type="hidden" id="modal-estudiante-id">
+            <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block mb-1">Categoría</label>
+                <select id="tipo-anotacion" class="w-full bg-slate-50 border border-slate-200 text-slate-700 rounded-lg py-2 px-3 text-sm outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400">
+                    <option value="COMPORTAMIENTO">Comportamiento</option>
+                    <option value="MATERIALES">Falta de materiales</option>
+                    <option value="PARTICIPACION">Participación destacada</option>
+                    <option value="OTRO">Otro</option>
+                </select>
             </div>
+            <div>
+                <label class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block mb-1">Descripción</label>
+                <textarea id="desc-anotacion" rows="3" placeholder="Detalla lo ocurrido…"
+                    class="w-full bg-slate-50 border border-slate-200 text-slate-700 rounded-lg py-2 px-3 text-sm outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 resize-none"></textarea>
+            </div>
+            <div id="contenedor-historial-modal" class="hidden border-t border-slate-100 pt-3"></div>
+        </div>
+        <div class="px-5 py-3 border-t border-slate-100 flex justify-end gap-2">
+            <button type="button" onclick="cerrarModal()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-sm transition">Cancelar</button>
+            <button type="button" onclick="guardarAnotacion()" id="btn-guardar-modal"
+                class="px-4 py-2 rounded-lg bg-slate-900 hover:bg-indigo-600 text-white font-semibold text-sm transition">Guardar</button>
         </div>
     </div>
 </div>
 
+<!-- ── Modal recordatorio tarea ── -->
 {% if tarea_pendiente and mostrar_popup %}
-<div id="modal-recordatorio-tarea" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity" aria-hidden="true"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-        <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md w-full border-t-8 border-purple-500">
-            <div class="bg-white px-6 pt-8 pb-6 text-center">
-                <div class="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-purple-50 mb-6 shadow-inner">
-                    <i class="fa-solid fa-bell text-4xl text-purple-500 animate-[bounce_2s_infinite]"></i>
-                </div>
-                <h3 class="text-2xl font-black text-slate-800 mb-2" id="modal-title">¡Recordatorio de Tarea!</h3>
-                <p class="text-sm font-bold text-purple-600 uppercase tracking-wider mb-6">Dejada en Clase {{ clase_anterior.numero_clase }}</p>
-                
-                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5 mb-6 text-left relative">
-                    <i class="fa-solid fa-quote-left text-slate-200 text-3xl absolute top-3 left-3"></i>
-                    <p class="text-base text-slate-700 font-medium relative z-10 pl-6 pr-2 py-2">"{{ tarea_pendiente }}"</p>
-                </div>
-                <button type="button" onclick="cerrarRecordatorio()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-purple-500/30 transition-all active:scale-95 text-lg">
-                    ¡Entendido, a evaluar!
-                </button>
+<div id="modal-recordatorio-tarea" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm px-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full border-t-4 border-violet-500 overflow-hidden">
+        <div class="p-6 text-center">
+            <div class="h-14 w-14 rounded-full bg-violet-50 border border-violet-100 flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-bell text-violet-500 text-2xl animate-bounce"></i>
             </div>
+            <p class="text-[10px] font-semibold uppercase tracking-wider text-violet-400 mb-1">Recordatorio · C-{{ clase_anterior.numero_clase }}</p>
+            <h3 class="font-display font-bold text-slate-900 text-lg mb-4">Revisar tarea pendiente</h3>
+            <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 text-left mb-5">
+                <p class="text-sm text-slate-600 italic leading-relaxed">"{{ tarea_pendiente }}"</p>
+            </div>
+            <button type="button" onclick="cerrarRecordatorio()"
+                class="w-full bg-slate-900 hover:bg-violet-600 text-white font-semibold py-2.5 px-6 rounded-lg transition text-sm">
+                Entendido, a evaluar
+            </button>
         </div>
     </div>
 </div>
 {% endif %}
 
-<div id="modal-confirmacion" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" aria-hidden="true" onclick="cerrarModalConfirmacion()"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-        <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm w-full">
-            <div class="bg-white px-6 pt-6 pb-6 text-center">
-                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-50 mb-4 text-blue-500">
-                    <i class="fa-solid fa-floppy-disk text-2xl"></i>
-                </div>
-                <h3 class="text-xl font-black text-slate-800 mb-2" id="modal-title">Confirmar Guardado</h3>
-                <p class="text-sm text-slate-500 mb-6">¿Verificaste correctamente la asistencia, entregas y notas de todos los estudiantes?</p>
-                
-                <div class="flex flex-col gap-3">
-                    <button type="button" id="btn-confirmar-guardado" onclick="enviarFormularioAsistencia()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-md transition-all active:scale-95">
-                        Sí, guardar registros
-                    </button>
-                    <button type="button" onclick="cerrarModalConfirmacion()" class="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold py-3.5 px-6 rounded-xl transition-all">
-                        Revisar de nuevo
-                    </button>
-                </div>
+<!-- ── Modal confirmación guardado ── -->
+<div id="modal-confirmacion" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4" style="display:none;">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full border border-slate-100 overflow-hidden">
+        <div class="p-6 text-center">
+            <div class="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-floppy-disk text-slate-500 text-lg"></i>
+            </div>
+            <h3 class="font-display font-bold text-slate-900 text-base mb-1.5">Confirmar guardado</h3>
+            <p class="text-sm text-slate-400 mb-5">¿Verificaste la asistencia, entregas y notas de todos los estudiantes?</p>
+            <div class="flex flex-col gap-2">
+                <button type="button" id="btn-confirmar-guardado" onclick="enviarFormularioAsistencia()"
+                    class="w-full bg-slate-900 hover:bg-indigo-600 text-white font-semibold py-2.5 px-6 rounded-lg transition text-sm">
+                    Sí, guardar registros
+                </button>
+                <button type="button" onclick="cerrarModalConfirmacion()"
+                    class="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold py-2.5 px-6 rounded-lg transition text-sm">
+                    Revisar de nuevo
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<div id="modal-estudiante" class="fixed inset-0 z-50 hidden">
-    <div class="fixed inset-0 bg-black/40" onclick="cerrarModalEstudiante()"></div>
-
-    <div class="bg-white max-w-md mx-auto mt-32 p-6 rounded-2xl shadow-xl relative z-10">
-        <h3 id="titulo-modal-estudiante" class="text-xl font-bold mb-4">Nuevo Estudiante</h3>
-
-        <input type="hidden" id="estudiante-id">
-
-        <input type="text" id="nuevo-nombre" placeholder="Nombres"
-            class="w-full mb-3 p-2 border rounded-lg">
-
-        <input type="text" id="nuevo-apellido" placeholder="Apellidos"
-            class="w-full mb-4 p-2 border rounded-lg">
-
-        <div class="flex justify-end gap-2">
-            <button onclick="cerrarModalEstudiante()" class="px-4 py-2 bg-gray-200 rounded-lg">Cancelar</button>
-            <button onclick="crearEstudiante()" class="px-4 py-2 bg-green-600 text-white rounded-lg">Guardar</button>
+<!-- ── Modal estudiante ── -->
+<div id="modal-estudiante" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4" style="display:none;">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full border border-slate-100 overflow-hidden">
+        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <p class="font-bold text-slate-900 text-sm" id="titulo-modal-estudiante">Nuevo Estudiante</p>
+            <button onclick="cerrarModalEstudiante()" class="h-8 w-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-600 transition">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+        <div class="p-5 space-y-3">
+            <input type="hidden" id="estudiante-id">
+            <input type="text" id="nuevo-nombre" placeholder="Nombres"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition">
+            <input type="text" id="nuevo-apellido" placeholder="Apellidos"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition">
+        </div>
+        <div class="px-5 py-3 border-t border-slate-100 flex justify-end gap-2">
+            <button onclick="cerrarModalEstudiante()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-sm transition">Cancelar</button>
+            <button onclick="crearEstudiante()" class="px-4 py-2 rounded-lg bg-slate-900 hover:bg-indigo-600 text-white font-semibold text-sm transition">Guardar</button>
         </div>
     </div>
 </div>
@@ -466,411 +501,252 @@
 </form>
 
 <script>
-    function confirmarEliminacion() {
-        if (confirm("¿Estás seguro de que deseas cancelar la clase? Esto borrará permanentemente la sesión y todos los registros de hoy.")) {
-            document.getElementById('form-eliminar-clase').submit();
-        }
+// ── Helpers modales ──
+function showModal(id) { var m=document.getElementById(id); if(m){ m.style.display='flex'; document.body.style.overflow='hidden'; } }
+function hideModal(id) { var m=document.getElementById(id); if(m){ m.style.display='none'; document.body.style.overflow=''; } }
+
+// ── Toggle nota con auto-focus ──
+function toggleNota(panelId, inputId) {
+    var panel = document.getElementById(panelId);
+    if (!panel) return;
+    var wasHidden = panel.classList.contains('hidden');
+    panel.classList.toggle('hidden');
+    if (wasHidden) {
+        var input = document.getElementById(inputId);
+        if (input) { setTimeout(function(){ input.focus(); input.select(); }, 50); }
     }
+}
 
-    const modalConfirmacion = document.getElementById('modal-confirmacion');
+// ── Visor de foto de estudiante ──
+function verFotoEstudiante(src, nombre) {
+    var existing = document.getElementById('foto-viewer-overlay');
+    if (existing) existing.remove();
+    var overlay = document.createElement('div');
+    overlay.id = 'foto-viewer-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;cursor:pointer;';
+    overlay.onclick = function(){ overlay.remove(); document.body.style.overflow=''; };
+    overlay.innerHTML = '<img src="'+src+'" style="max-width:90vw;max-height:80vh;border-radius:12px;object-fit:contain;box-shadow:0 20px 60px rgba(0,0,0,0.5);" />'
+        + '<p style="color:rgba(255,255,255,0.7);font-size:13px;margin-top:12px;font-family:sans-serif;">'+nombre+'</p>'
+        + '<p style="color:rgba(255,255,255,0.4);font-size:11px;margin-top:4px;font-family:sans-serif;">Toca para cerrar</p>';
+    document.body.appendChild(overlay);
+    document.body.style.overflow = 'hidden';
+}
 
-    function abrirModalConfirmacion() {
-        modalConfirmacion.classList.remove('hidden');
+// ── Confirmación / guardado ──
+function confirmarEliminacion() {
+    if (confirm("¿Seguro que deseas eliminar esta clase? Se borrarán todos los registros.")) {
+        document.getElementById('form-eliminar-clase').submit();
     }
+}
+function abrirModalConfirmacion() { showModal('modal-confirmacion'); }
+function cerrarModalConfirmacion() { hideModal('modal-confirmacion'); }
+function enviarFormularioAsistencia() {
+    var btn = document.getElementById('btn-confirmar-guardado');
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Guardando…';
+    btn.disabled = true;
+    document.getElementById('form-asistencia').submit();
+}
 
-    function cerrarModalConfirmacion() {
-        modalConfirmacion.classList.add('hidden');
+// ── Recordatorio tarea ──
+function cerrarRecordatorio() { hideModal('modal-recordatorio-tarea'); }
+
+// ── Modal anotación ──
+var SESION_ID = "{{ sesion.id }}";
+var modal = document.getElementById('modal-anotacion');
+var inputEstudianteId = document.getElementById('modal-estudiante-id');
+var inputTipo = document.getElementById('tipo-anotacion');
+var inputDesc = document.getElementById('desc-anotacion');
+var btnGuardar = document.getElementById('btn-guardar-modal');
+
+function abrirModalAnotacion(estudianteId, estudianteNombre) {
+    inputEstudianteId.value = estudianteId;
+    document.getElementById('modal-estudiante-nombre').textContent = estudianteNombre;
+    inputDesc.value = '';
+    var historial = document.getElementById('historial_oculto_' + estudianteId);
+    var contenedor = document.getElementById('contenedor-historial-modal');
+    if (historial && historial.innerHTML.trim()) {
+        contenedor.innerHTML = historial.innerHTML;
+        contenedor.classList.remove('hidden');
+    } else {
+        contenedor.innerHTML = '';
+        contenedor.classList.add('hidden');
     }
-
-    function enviarFormularioAsistencia() {
-        const btnSubmit = document.getElementById('btn-confirmar-guardado');
-        btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Guardando...';
-        btnSubmit.disabled = true;
-        btnSubmit.classList.add('opacity-75', 'cursor-not-allowed');
-        document.getElementById('form-asistencia').submit();
-    }
-
-    function cerrarRecordatorio() {
-        const modalTarea = document.getElementById('modal-recordatorio-tarea');
-        if (modalTarea) {
-            modalTarea.style.display = 'none';
-        }
-    }
-
-    const modal = document.getElementById('modal-anotacion');
-    const tituloNombre = document.getElementById('modal-estudiante-nombre');
-    const inputEstudianteId = document.getElementById('modal-estudiante-id');
-    const inputTipo = document.getElementById('tipo-anotacion');
-    const inputDesc = document.getElementById('desc-anotacion');
-    const btnGuardar = document.getElementById('btn-guardar-modal');
-
-    const SESION_ID = "{{ sesion.id }}";
-
-    function abrirModalAnotacion(estudianteId, estudianteNombre) {
-        inputEstudianteId.value = estudianteId;
-        tituloNombre.textContent = "Para: " + estudianteNombre;
-        inputDesc.value = "";
-        
-        const historialOculto = document.getElementById('historial_oculto_' + estudianteId);
-        const contenedorModal = document.getElementById('contenedor-historial-modal');
-        
-        if (historialOculto && historialOculto.innerHTML.trim() !== '') {
-            contenedorModal.innerHTML = historialOculto.innerHTML;
-            contenedorModal.classList.remove('hidden');
-
-            // precargar primera anotación (opcional)
-            const primera = contenedorModal.querySelector('p');
-            if (primera) {
-                inputDesc.value = primera.textContent.replace(/"/g, '');
-            }
-
-        } else {
-            contenedorModal.innerHTML = '';
-            contenedorModal.classList.add('hidden');
-        }
-
-        modal.classList.remove('hidden');
-    }
-
-    function cerrarModal() {
-        modal.classList.add('hidden');
-
-        // limpiar campos
-        inputDesc.value = "";
-        inputTipo.value = "COMPORTAMIENTO";
-
-        // limpiar historial del modal
-        const contenedorModal = document.getElementById('contenedor-historial-modal');
-        contenedorModal.innerHTML = '';
-        contenedorModal.classList.add('hidden');
-
-        // limpiar estudiante seleccionado
-        inputEstudianteId.value = "";
-        tituloNombre.textContent = "Estudiante";
-    }
-
-    function guardarAnotacion() {
-        const descripcion = inputDesc.value.trim();
-        if (!descripcion) {
-            alert("Por favor escribe una descripción.");
-            return;
-        }
-
-        btnGuardar.textContent = "Guardando...";
-        btnGuardar.disabled = true;
-
-        const datos = {
-            sesion_id: SESION_ID,
-            estudiante_id: inputEstudianteId.value,
-            tipo: inputTipo.value,
-            descripcion: descripcion
-        };
-
-        fetch("{% url 'gestion:guardar_anotacion' %}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            body: JSON.stringify(datos)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data.status === 'success') {
-
-                const estudianteId = inputEstudianteId.value;
-
-                // 🔶 1. Iluminar botón
-                const btn = document.getElementById('btn-anotacion-' + estudianteId);
-                if (btn) {
-                    btn.classList.remove('text-slate-400');
-                    btn.classList.add('bg-yellow-100', 'text-yellow-600');
-                }
-
-                // 🔶 2. Crear nueva anotación visual
-                const contenedorOculto = document.getElementById('historial_oculto_' + estudianteId);
-
-                const nueva = document.createElement('div');
+    showModal('modal-anotacion');
+}
+function cerrarModal() {
+    hideModal('modal-anotacion');
+    inputDesc.value = '';
+    inputTipo.value = 'COMPORTAMIENTO';
+    inputEstudianteId.value = '';
+    var c = document.getElementById('contenedor-historial-modal');
+    c.innerHTML = ''; c.classList.add('hidden');
+}
+function guardarAnotacion() {
+    var desc = inputDesc.value.trim();
+    if (!desc) { alert("Por favor escribe una descripción."); return; }
+    btnGuardar.textContent = "Guardando…";
+    btnGuardar.disabled = true;
+    fetch("{% url 'gestion:guardar_anotacion' %}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value },
+        body: JSON.stringify({ sesion_id: SESION_ID, estudiante_id: inputEstudianteId.value, tipo: inputTipo.value, descripcion: desc })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+        if (data.status === 'success') {
+            var eId = inputEstudianteId.value;
+            var btn = document.getElementById('btn-anotacion-' + eId);
+            if (btn) { btn.className = btn.className.replace('text-slate-300', ''); btn.classList.add('bg-amber-100','text-amber-500'); }
+            var oculto = document.getElementById('historial_oculto_' + eId);
+            if (oculto) {
+                oculto.classList.remove('hidden');
+                var nueva = document.createElement('div');
                 nueva.className = "bg-gray-50 border border-gray-100 rounded p-2 flex justify-between items-start shadow-sm mt-2";
-
-                nueva.innerHTML = `
-                    <div>
-                        <span class="text-[9px] font-bold uppercase tracking-wider bg-white border border-gray-200 px-1.5 py-0.5 rounded text-gray-500 mb-1 inline-block">
-                            ${inputTipo.value}
-                        </span>
-                        <p class="text-xs text-gray-700 italic">"${inputDesc.value}"</p>
-                    </div>
-                    <button class="text-red-400 hover:text-red-600 p-1.5">
-                        <i class="fa-solid fa-trash-can text-xs"></i>
-                    </button>
-                `;
-
-                // 🔶 3. Insertar en historial oculto
-                if (contenedorOculto) {
-                    contenedorOculto.classList.remove('hidden');
-                    contenedorOculto.appendChild(nueva);
-                }
-
-                cerrarModal();
-                inputDesc.value = "";
-
-            } else {
-                alert("Error: " + data.mensaje);
+                nueva.innerHTML = '<div><span class="text-[9px] font-bold uppercase tracking-wider bg-white border border-gray-200 px-1.5 py-0.5 rounded text-gray-500 mb-1 inline-block">' + inputTipo.value + '</span><p class="text-xs text-gray-700 italic">"' + desc + '"</p></div>';
+                oculto.appendChild(nueva);
             }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("Hubo un error de conexión.");
-        })
-        .finally(() => {
-            btnGuardar.textContent = "Guardar";
-            btnGuardar.disabled = false;
-        });
-    }
+            cerrarModal();
+        } else { alert("Error: " + data.mensaje); }
+    })
+    .catch(function(){ alert("Error de conexión."); })
+    .finally(function(){ btnGuardar.textContent = "Guardar"; btnGuardar.disabled = false; });
+}
 
-    function bloquearActividades(asistenciaId, estado) {
-        const checkActividad = document.getElementById('actividad_' + asistenciaId);
-        const checkTarea = document.getElementById('tarea_' + asistenciaId);
-        const checkQuiz = document.getElementById('quiz_' + asistenciaId);
-        const checkExamen = document.getElementById('examen_' + asistenciaId);
-
-        const bloquearPresencial = (estado === 'AUSENTE' || estado === 'EXCUSADO');
-
-        if (checkActividad) {
-            checkActividad.disabled = bloquearPresencial;
-            if (bloquearPresencial) checkActividad.checked = false;
-        }
-
-        if (checkQuiz) {
-            checkQuiz.disabled = bloquearPresencial;
-            if (bloquearPresencial) checkQuiz.checked = false;
-        }
-
-        if (checkExamen) {
-            checkExamen.disabled = bloquearPresencial;
-            if (bloquearPresencial) checkExamen.checked = false;
-        }
-
-        if (checkTarea) {
-            const bloquearTar = (estado === 'AUSENTE');
-            checkTarea.disabled = bloquearTar;
-            if (bloquearTar) checkTarea.checked = false;
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const radiosMarcados = document.querySelectorAll('input[type="radio"]:checked');
-        radiosMarcados.forEach(function(radio) {
-            const nombre = radio.name;
-            if (nombre.startsWith('estado_')) {
-                const asistenciaId = nombre.split('_')[1];
-                bloquearActividades(asistenciaId, radio.value);
-            }
-        });
+// ── Bloquear actividades ──
+function bloquearActividades(id, estado) {
+    var ids = ['actividad_','quiz_','examen_'];
+    var bloquear = (estado === 'AUSENTE' || estado === 'EXCUSADO');
+    ids.forEach(function(prefix) {
+        var el = document.getElementById(prefix + id);
+        if (el) { el.disabled = bloquear; if (bloquear) el.checked = false; }
     });
+    var tarea = document.getElementById('tarea_' + id);
+    if (tarea) { tarea.disabled = (estado === 'AUSENTE'); if (estado === 'AUSENTE') tarea.checked = false; }
+}
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('input[type="radio"]:checked').forEach(function(r) {
+        if (r.name.startsWith('estado_')) bloquearActividades(r.name.split('_')[1], r.value);
+    });
+});
 
-    function confirmarFoto(asistenciaId) {
-        const label = document.getElementById('label_foto_' + asistenciaId);
-        const checkActividad = document.getElementById('actividad_' + asistenciaId);
+// ── Foto evidencia ──
+function confirmarFoto(id) {
+    var label = document.getElementById('label_foto_' + id);
+    label.classList.remove('bg-white','text-slate-400','border-slate-200');
+    label.classList.add('bg-emerald-500','text-white');
+    var icon = label.querySelector('i');
+    if (icon) { icon.classList.remove('fa-camera'); icon.classList.add('fa-check'); }
+    var chk = document.getElementById('actividad_' + id);
+    if (chk && !chk.disabled) chk.checked = true;
+}
+function eliminarFotoVisual(id) {
+    if (!confirm("¿Quitar esta evidencia? Se borrará al guardar.")) return;
+    document.getElementById('input_borrar_foto_' + id).checked = true;
+    var acc = document.getElementById('acciones_foto_' + id);
+    if (acc) acc.style.display = 'none';
+    var label = document.getElementById('label_foto_' + id);
+    label.classList.remove('bg-emerald-500','text-white');
+    label.classList.add('bg-white','text-slate-400','border-slate-200');
+    var icon = label.querySelector('i');
+    if (icon) { icon.classList.remove('fa-check'); icon.classList.add('fa-camera'); }
+    var inp = document.getElementById('foto_' + id);
+    if (inp) inp.value = '';
+}
 
-        // Cambiar estilos
-        label.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
-        label.classList.add('bg-green-500', 'text-white', 'border-transparent');
-
-        // Cambiar icono sin tocar el input
-        const icon = label.querySelector('i');
-        if (icon) {
-            icon.classList.remove('fa-camera');
-            icon.classList.add('fa-check');
-        }
-
-        // Marcar actividad automáticamente
-        if (checkActividad && !checkActividad.disabled) {
-            checkActividad.checked = true;
-        }
-    }
-
-
-    function eliminarFotoVisual(asistenciaId) {
-        if (confirm("¿Quitar esta evidencia? Se borrará al guardar la clase.")) {
-            document.getElementById('input_borrar_foto_' + asistenciaId).checked = true;
-
-            const acciones = document.getElementById('acciones_foto_' + asistenciaId);
-            if (acciones) acciones.style.display = 'none';
-
-            const label = document.getElementById('label_foto_' + asistenciaId);
-
-            // Cambiar estilos
-            label.classList.remove('bg-green-500', 'text-white', 'border-transparent');
-            label.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
-
-            // Cambiar icono sin tocar el input
-            const icon = label.querySelector('i');
-            if (icon) {
-                icon.classList.remove('fa-check');
-                icon.classList.add('fa-camera');
-            }
-
-            // Limpiar input file
-            const inputFile = document.getElementById('foto_' + asistenciaId);
-            if (inputFile) {
-                inputFile.value = "";
-            }
-        }
-    }
-
-    function borrarAnotacionFlash(event, anotacionId) {
-        event.stopPropagation(); // evita que dispare otras cosas
-        event.preventDefault();  // evita submit del form
-
-        if(confirm("¿Seguro que deseas eliminar esta anotación del sistema?")) {
-            fetch(`/anotacion/eliminar/${anotacionId}/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.status === 'ok') {
-                    const elementos = document.querySelectorAll('#anotacion_item_' + anotacionId);
-                    elementos.forEach(el => {
-                        el.style.opacity = "0";
-                        setTimeout(() => el.remove(), 300);
-                    });
-                }
-            });
-        }
-    }
-
-    // Buscador
-    const buscador = document.getElementById('buscador-estudiantes');
-
-    if (buscador) {
-        buscador.addEventListener('keyup', function() {
-            const texto = this.value.toLowerCase();
-            const tarjetas = document.querySelectorAll('.tarjeta-estudiante');
-
-            tarjetas.forEach(function(tarjeta) {
-                const nombre = tarjeta.getAttribute('data-nombre').toLowerCase();
-
-                if (nombre.includes(texto)) {
-                    tarjeta.style.display = 'flex';
-                } else {
-                    tarjeta.style.display = 'none';
-                }
-            });
-        });
-    }
-
-    // Inactivar estudiante
-    function inactivarEstudiante(estudianteId) {
-        if (!confirm("¿Inactivar este estudiante? Ya no aparecerá en asistencia.")) return;
-
-        fetch(`/estudiante/inactivar/${estudianteId}/`, {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
-                "Content-Type": "application/json"
-            }
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === "ok") {
-                location.reload(); // recarga la lista
-            } else {
-                alert("Error al inactivar");
-            }
-        });
-    }
-
-    // Modal para crear estudiantes
-    function abrirModalEstudiante() {
-        document.getElementById('modal-estudiante').classList.remove('hidden');
-
-        // limpiar si es nuevo
-        if (!document.getElementById('estudiante-id').value) {
-            document.getElementById('nuevo-nombre').value = "";
-            document.getElementById('nuevo-apellido').value = "";
-            document.getElementById('titulo-modal-estudiante').innerText = "Nuevo Estudiante";
-        }
-    }
-
-    function cerrarModalEstudiante() {
-        document.getElementById('modal-estudiante').classList.add('hidden');
-
-        // limpiar todo
-        document.getElementById('estudiante-id').value = "";
-        document.getElementById('nuevo-nombre').value = "";
-        document.getElementById('nuevo-apellido').value = "";
-        document.getElementById('titulo-modal-estudiante').innerText = "Nuevo Estudiante";
-    }
-
-    // Crear estudiante
-    function crearEstudiante() {
-        const id = document.getElementById('estudiante-id').value;
-        const nombres = document.getElementById('nuevo-nombre').value.trim();
-        const apellidos = document.getElementById('nuevo-apellido').value.trim();
-
-        if (!nombres || !apellidos) {
-            alert("Completa todos los campos");
-            return;
-        }
-
-        const url = id ? `/estudiante/editar/${id}/` : `/estudiante/crear/`;
-
-        fetch(url, {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                nombres: nombres,
-                apellidos: apellidos,
-                curso_id: "{{ sesion.curso_materia.curso.id }}"
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === "ok") {
-                location.reload();
-            } else {
-                alert("Error");
-            }
-        });
-    }
-
-    // Modal edicion
-    function editarEstudiante(id, nombres, apellidos) {
-        document.getElementById('estudiante-id').value = id;
-        document.getElementById('nuevo-nombre').value = nombres;
-        document.getElementById('nuevo-apellido').value = apellidos;
-
-        document.getElementById('titulo-modal-estudiante').innerText = "Editar Estudiante";
-
-        abrirModalEstudiante();
-    }
-
-    function toggleMenu(id) {
-        const menu = document.getElementById('menu-' + id);
-
-        // cerrar todos primero
-        document.querySelectorAll('[id^="menu-"]').forEach(m => {
-            if (m !== menu) m.classList.add('hidden');
-        });
-
-        menu.classList.toggle('hidden');
-    }
-
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('[onclick^="toggleMenu"]') && !e.target.closest('[id^="menu-"]')) {
-            document.querySelectorAll('[id^="menu-"]').forEach(menu => {
-                menu.classList.add('hidden');
+// ── Borrar anotación ──
+function borrarAnotacionFlash(event, anotacionId) {
+    event.stopPropagation(); event.preventDefault();
+    if (!confirm("¿Eliminar esta anotación?")) return;
+    fetch('/anotacion/eliminar/' + anotacionId + '/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value, 'Content-Type': 'application/json' }
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+        if (data.status === 'ok') {
+            document.querySelectorAll('#anotacion_item_' + anotacionId).forEach(function(el) {
+                el.style.opacity = '0'; setTimeout(function(){ el.remove(); }, 300);
             });
         }
     });
+}
+
+// ── Buscador ──
+var buscador = document.getElementById('buscador-estudiantes');
+if (buscador) {
+    buscador.addEventListener('input', function() {
+        var q = this.value.toLowerCase();
+        document.querySelectorAll('.tarjeta-estudiante').forEach(function(t) {
+            t.style.display = (t.dataset.nombre || '').toLowerCase().includes(q) ? '' : 'none';
+        });
+    });
+}
+
+// ── Menú desplegable ──
+function toggleMenu(id) {
+    var menu = document.getElementById('menu-' + id);
+    document.querySelectorAll('[id^="menu-"]').forEach(function(m){ if(m!==menu) m.classList.add('hidden'); });
+    menu.classList.toggle('hidden');
+}
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('[onclick^="toggleMenu"]') && !e.target.closest('[id^="menu-"]')) {
+        document.querySelectorAll('[id^="menu-"]').forEach(function(m){ m.classList.add('hidden'); });
+    }
+});
+
+// ── Modal estudiante ──
+function abrirModalEstudiante() {
+    if (!document.getElementById('estudiante-id').value) {
+        document.getElementById('nuevo-nombre').value = '';
+        document.getElementById('nuevo-apellido').value = '';
+        document.getElementById('titulo-modal-estudiante').innerText = 'Nuevo Estudiante';
+    }
+    showModal('modal-estudiante');
+}
+function cerrarModalEstudiante() {
+    hideModal('modal-estudiante');
+    document.getElementById('estudiante-id').value = '';
+    document.getElementById('nuevo-nombre').value = '';
+    document.getElementById('nuevo-apellido').value = '';
+    document.getElementById('titulo-modal-estudiante').innerText = 'Nuevo Estudiante';
+}
+function crearEstudiante() {
+    var id = document.getElementById('estudiante-id').value;
+    var nombres = document.getElementById('nuevo-nombre').value.trim();
+    var apellidos = document.getElementById('nuevo-apellido').value.trim();
+    if (!nombres || !apellidos) { alert("Completa todos los campos"); return; }
+    fetch(id ? '/estudiante/editar/' + id + '/' : '/estudiante/crear/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombres: nombres, apellidos: apellidos, curso_id: "{{ sesion.curso_materia.curso.id }}" })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){ if (data.status === 'ok') location.reload(); else alert('Error'); });
+}
+function editarEstudiante(id, nombres, apellidos) {
+    document.getElementById('estudiante-id').value = id;
+    document.getElementById('nuevo-nombre').value = nombres;
+    document.getElementById('nuevo-apellido').value = apellidos;
+    document.getElementById('titulo-modal-estudiante').innerText = 'Editar Estudiante';
+    abrirModalEstudiante();
+}
+
+// ── Inactivar ──
+function inactivarEstudiante(id) {
+    if (!confirm("¿Inactivar este estudiante?")) return;
+    fetch('/estudiante/inactivar/' + id + '/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value, 'Content-Type': 'application/json' }
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){ if (data.status === 'ok') location.reload(); else alert('Error al inactivar'); });
+}
+
+// ── Escape ──
+document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Escape') return;
+    ['modal-anotacion','modal-confirmacion','modal-estudiante'].forEach(hideModal);
+});
 </script>
 
 {% endblock %}

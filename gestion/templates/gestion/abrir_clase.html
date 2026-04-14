@@ -3,158 +3,139 @@
 {% block title %}Abrir Clase - {{ curso_materia.curso }} / {{ curso_materia.materia }}{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 py-6 sm:px-0">
+<div class="max-w-2xl mx-auto space-y-6">
 
-    <div class="mb-6">
-        <a href="{% url 'gestion:lista_cursos' %}" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors bg-white hover:bg-blue-50 px-3 py-2 rounded-xl border border-transparent hover:border-blue-100 shadow-sm">
-            <i class="fa-solid fa-arrow-left"></i>
+    <!-- Back + Header -->
+    <div>
+        <a href="{% url 'gestion:lista_cursos' %}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-slate-700 transition-colors mb-4">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
             Volver a mis cursos
         </a>
+
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-1">Nueva sesión</p>
+        <h1 class="font-display text-3xl font-bold text-slate-900 tracking-tight leading-none">Abrir Clase</h1>
+        <p class="text-slate-400 mt-1.5 text-sm">
+            {{ curso_materia.curso }} · <span class="text-slate-600 font-medium">{{ curso_materia.materia }}</span>
+        </p>
     </div>
 
-    <div class="bg-white shadow-2xl shadow-slate-200/60 rounded-3xl overflow-hidden border border-slate-200">
-        <!-- Header -->
-        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-6 sm:px-8 py-6 sm:py-7 border-b border-slate-800">
-            <div class="flex items-start gap-4">
-                <div class="bg-blue-600 text-white h-14 w-14 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-600/20 shrink-0">
-                    <i class="fa-solid fa-chalkboard-user text-2xl"></i>
+    <!-- Divider -->
+    <div class="border-t border-slate-200"></div>
+
+    <!-- Form -->
+    <form method="POST" class="space-y-5">
+        {% csrf_token %}
+
+        <!-- Periodo + Fecha -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label for="{{ form.periodo.id_for_label }}" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                    Periodo académico
+                </label>
+                <div class="bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition shadow-sm">
+                    {{ form.periodo }}
                 </div>
+            </div>
 
-                <div class="min-w-0">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-200 mb-3">
-                        <i class="fa-solid fa-circle-plus"></i>
-                        Nueva sesión
-                    </div>
-
-                    <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                        Abrir Clase
-                    </h2>
-
-                    <p class="text-sm sm:text-base text-slate-300 mt-1">
-                        Curso: <span class="font-bold text-blue-300">{{ curso_materia.curso }} - {{ curso_materia.materia }}</span>
+            <div>
+                <label for="{{ form.fecha.id_for_label }}" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                    Fecha de la clase
+                </label>
+                <div class="bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition shadow-sm">
+                    {{ form.fecha }}
+                </div>
+                {% if form.fecha.errors %}
+                    <p class="mt-1.5 text-xs font-semibold text-rose-500 flex items-center gap-1">
+                        <i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
+                        {% for error in form.fecha.errors %}{{ error }}{% endfor %}
                     </p>
-                </div>
+                {% else %}
+                    <p class="text-[11px] text-slate-400 mt-1.5">Por defecto es hoy.</p>
+                {% endif %}
             </div>
         </div>
 
-        <!-- Formulario -->
-        <div class="p-6 sm:p-8">
-            <form method="POST" class="space-y-6">
-                {% csrf_token %}
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                        <label for="{{ form.periodo.id_for_label }}" class="block text-sm font-bold text-slate-700 mb-2">
-                            Periodo académico
-                        </label>
-                        <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-100 transition-all">
-                            {{ form.periodo }}
-                        </div>
-                    </div>
-
-                    <div>
-                        <label for="{{ form.fecha.id_for_label }}" class="block text-sm font-bold text-slate-700 mb-2">
-                            Fecha de la clase
-                        </label>
-                        <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-100 transition-all">
-                            {{ form.fecha }}
-                        </div>
-
-                        {% if form.fecha.errors %}
-                            <div class="mt-2 text-xs font-semibold text-rose-600 flex items-start gap-2">
-                                <i class="fa-solid fa-triangle-exclamation mt-0.5"></i>
-                                <div>
-                                    {% for error in form.fecha.errors %}{{ error }}<br>{% endfor %}
-                                </div>
-                            </div>
-                        {% else %}
-                            <p class="text-xs text-slate-400 mt-1.5 font-medium">Por defecto es hoy.</p>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div>
-                    <label for="{{ form.numero_clase.id_for_label }}" class="block text-sm font-bold text-slate-700 mb-2">
-                        Número de la clase
-                    </label>
-                    <div class="relative rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-100 transition-all">
-                        <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                            <span class="text-slate-400 font-black">#</span>
-                        </div>
-                        <div class="pl-6">
-                            {{ form.numero_clase }}
-                        </div>
-                    </div>
-
-                    {% if form.numero_clase.errors %}
-                        <div class="mt-2 text-xs font-semibold text-rose-600 flex items-start gap-2">
-                            <i class="fa-solid fa-triangle-exclamation mt-0.5"></i>
-                            <div>
-                                {% for error in form.numero_clase.errors %}{{ error }}<br>{% endfor %}
-                            </div>
-                        </div>
-                    {% else %}
-                        <p class="text-xs text-slate-400 mt-1.5 font-medium">Sugerencia automática del sistema.</p>
-                    {% endif %}
-                </div>
-
-                <div>
-                    <label for="{{ form.tema.id_for_label }}" class="block text-sm font-bold text-slate-700 mb-2">
-                        Tema a tratar hoy
-                    </label>
-                    <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-100 transition-all">
-                        {{ form.tema }}
-                    </div>
-                </div>
-
-                <div class="bg-slate-50 rounded-3xl border border-slate-200 p-5 sm:p-6 mt-8">
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="h-10 w-10 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 shadow-sm">
-                            <i class="fa-solid fa-list-check"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest">
-                                Plan de evaluación de hoy
-                            </h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Selecciona lo que aplicarás en esta clase.</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <label class="flex items-center p-4 border border-slate-200 rounded-2xl cursor-pointer bg-white hover:border-blue-300 hover:shadow-md transition-all group">
-                            {{ form.actividad_realizada }}
-                            <div class="ml-3">
-                                <span class="block text-sm font-bold text-slate-700 group-hover:text-blue-700 transition-colors">Actividad</span>
-                                <span class="block text-xs text-slate-400 mt-0.5">Trabajo en clase</span>
-                            </div>
-                        </label>
-
-                        <label class="flex items-center p-4 border border-slate-200 rounded-2xl cursor-pointer bg-white hover:border-orange-300 hover:shadow-md transition-all group">
-                            {{ form.realizo_quiz }}
-                            <div class="ml-3">
-                                <span class="block text-sm font-bold text-slate-700 group-hover:text-orange-600 transition-colors">Quiz</span>
-                                <span class="block text-xs text-slate-400 mt-0.5">Evaluación corta</span>
-                            </div>
-                        </label>
-
-                        <label class="flex items-center p-4 border border-slate-200 rounded-2xl cursor-pointer bg-white hover:border-rose-300 hover:shadow-md transition-all group">
-                            {{ form.realizo_examen }}
-                            <div class="ml-3">
-                                <span class="block text-sm font-bold text-slate-700 group-hover:text-rose-600 transition-colors">Examen</span>
-                                <span class="block text-xs text-slate-400 mt-0.5">Evaluación formal</span>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="pt-4">
-                    <button type="submit" class="w-full inline-flex justify-center items-center gap-2 py-3.5 px-4 rounded-2xl shadow-lg shadow-blue-600/20 text-base font-black text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all active:scale-[0.98]">
-                        Iniciar clase y tomar asistencia
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </button>
-                </div>
-            </form>
+        <!-- Número de clase -->
+        <div>
+            <label for="{{ form.numero_clase.id_for_label }}" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                Número de la clase
+            </label>
+            <div class="bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition shadow-sm flex items-center gap-2">
+                <span class="text-slate-300 font-bold text-sm">#</span>
+                {{ form.numero_clase }}
+            </div>
+            {% if form.numero_clase.errors %}
+                <p class="mt-1.5 text-xs font-semibold text-rose-500 flex items-center gap-1">
+                    <i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
+                    {% for error in form.numero_clase.errors %}{{ error }}{% endfor %}
+                </p>
+            {% else %}
+                <p class="text-[11px] text-slate-400 mt-1.5">Sugerencia automática del sistema.</p>
+            {% endif %}
         </div>
-    </div>
+
+        <!-- Tema -->
+        <div>
+            <label for="{{ form.tema.id_for_label }}" class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                Tema a tratar hoy
+            </label>
+            <div class="bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition shadow-sm">
+                {{ form.tema }}
+            </div>
+        </div>
+
+        <!-- Plan de evaluación -->
+        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+            <div class="flex items-center gap-2.5 mb-4">
+                <div class="h-8 w-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                    <i class="fa-solid fa-list-check text-slate-400 text-sm"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-slate-700">Plan de evaluación</p>
+                    <p class="text-[11px] text-slate-400">Selecciona lo que aplicarás en esta clase.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <label class="flex items-center gap-3 p-3.5 border border-slate-200 rounded-xl cursor-pointer bg-slate-50 hover:border-amber-300 hover:bg-amber-50/50 transition group">
+                    {{ form.actividad_realizada }}
+                    <div>
+                        <span class="block text-xs font-semibold text-slate-700 group-hover:text-amber-700 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-bolt text-amber-400 text-[10px]"></i> Actividad
+                        </span>
+                        <span class="block text-[10px] text-slate-400 mt-0.5">Trabajo en clase</span>
+                    </div>
+                </label>
+
+                <label class="flex items-center gap-3 p-3.5 border border-slate-200 rounded-xl cursor-pointer bg-slate-50 hover:border-orange-300 hover:bg-orange-50/50 transition group">
+                    {{ form.realizo_quiz }}
+                    <div>
+                        <span class="block text-xs font-semibold text-slate-700 group-hover:text-orange-600 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-signature text-orange-400 text-[10px]"></i> Quiz
+                        </span>
+                        <span class="block text-[10px] text-slate-400 mt-0.5">Evaluación corta</span>
+                    </div>
+                </label>
+
+                <label class="flex items-center gap-3 p-3.5 border border-slate-200 rounded-xl cursor-pointer bg-slate-50 hover:border-rose-300 hover:bg-rose-50/50 transition group">
+                    {{ form.realizo_examen }}
+                    <div>
+                        <span class="block text-xs font-semibold text-slate-700 group-hover:text-rose-600 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-graduation-cap text-rose-400 text-[10px]"></i> Examen
+                        </span>
+                        <span class="block text-[10px] text-slate-400 mt-0.5">Evaluación formal</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit"
+            class="w-full inline-flex justify-center items-center gap-2 py-3 px-4 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white text-sm font-semibold transition active:scale-[.98] shadow-sm">
+            Iniciar clase y tomar asistencia
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+        </button>
+
+    </form>
 </div>
 {% endblock %}

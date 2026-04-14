@@ -3,357 +3,325 @@
 {% block title %}Reportes - {{ curso_materia.curso }} / {{ curso_materia.materia }}{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 py-6 sm:px-0">
+<div class="space-y-6">
 
-    <!-- Header -->
-    <div class="mb-6">
-        <a href="{% url 'gestion:lista_cursos' %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium mb-3 inline-flex items-center gap-2 transition-colors">
-            <i class="fa-solid fa-arrow-left"></i>
+    <!-- Back + Header -->
+    <div>
+        <a href="{% url 'gestion:lista_cursos' %}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-slate-700 transition-colors mb-4">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
             Volver a cursos
         </a>
 
-        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-3xl shadow-2xl overflow-hidden border border-slate-800">
-            <div class="p-6 sm:p-8">
-                <div class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-6">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-1">Reportes del curso</p>
+                <h1 class="font-display text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight leading-none">
+                    {{ curso_materia.materia }}
+                </h1>
+                <p class="text-slate-400 mt-1.5 text-sm">
+                    Grado {{ curso.grado.numero }}{% if curso.seccion %} · Sección {{ curso.seccion }}{% endif %}
+                </p>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap">
+                <!-- Stat -->
+                <div class="bg-white border border-slate-200 rounded-xl px-4 py-2.5 flex items-center gap-2.5 shadow-sm">
+                    <div class="h-7 w-7 rounded-lg bg-slate-100 flex items-center justify-center">
+                        <i class="fa-solid fa-chalkboard text-slate-400 text-xs"></i>
+                    </div>
                     <div>
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-xs font-semibold tracking-wide uppercase text-slate-200 mb-4">
-                            <i class="fa-solid fa-chart-line"></i>
-                            Reportes del curso
-                        </div>
-
-                        <h1 class="text-3xl sm:text-4xl font-black tracking-tight">
-                            {{ curso_materia.materia }}
-                        </h1>
-
-                        <div class="mt-2 text-sm text-slate-300 font-medium">
-                            Grado {{ curso.grado.numero }}
-                            {% if curso.seccion %}
-                                · Sección {{ curso.seccion }}
-                            {% endif %}
-                        </div>
-
-                        <div class="mt-5 flex flex-wrap gap-2">
-                            {% for p in "1234"|make_list %}
-                            <a href="?periodo={{ p }}" class="px-4 py-2 text-sm font-semibold rounded-full border transition-all duration-200
-                                {% if periodo_seleccionado|stringformat:"i" == p %}
-                                    bg-white text-slate-900 border-white shadow-lg shadow-white/10
-                                {% else %}
-                                    bg-white/10 text-white border-white/10 hover:bg-white/15 hover:border-white/20
-                                {% endif %}
-                            ">
-                                Periodo {{ p }}
-                            </a>
-                            {% endfor %}
-                        </div>
+                        <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 leading-none">Clases</p>
+                        <p class="text-lg font-bold text-slate-900 leading-tight">{{ sesiones|length }}</p>
                     </div>
+                </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-1 gap-3 w-full xl:w-auto">
-                        <div class="rounded-2xl bg-white/10 border border-white/10 p-4 min-w-[150px]">
-                            <div class="text-xs uppercase tracking-wider text-slate-300 font-semibold">Clases</div>
-                            <div class="mt-1 text-2xl font-black">{{ sesiones|length }}</div>
-                            <div class="text-xs text-slate-400 mt-1">en este periodo</div>
-                        </div>
-                    </div>
+                <!-- Periodos -->
+                <div class="flex items-center gap-1 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
+                    {% for p in "1234"|make_list %}
+                    <a href="?periodo={{ p }}" class="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150
+                        {% if periodo_seleccionado|stringformat:'i' == p %}
+                            bg-slate-900 text-white shadow-sm
+                        {% else %}
+                            text-slate-400 hover:text-slate-700 hover:bg-slate-100
+                        {% endif %}
+                    ">P{{ p }}</a>
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="mb-5">
-        <div class="relative">
-            <input 
-                type="text" 
+    <!-- Divider -->
+    <div class="border-t border-slate-200"></div>
+
+    <!-- Toolbar -->
+    <div class="flex items-center justify-between gap-3 flex-wrap">
+        <div class="relative flex-1 max-w-xs">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 text-xs"></i>
+            <input
+                type="text"
                 id="buscador-estudiantes"
-                placeholder="Buscar estudiante..."
-                class="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 pl-11 focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"
+                placeholder="Buscar estudiante…"
+                autocomplete="off"
+                class="w-full bg-white border border-slate-200 rounded-lg pl-8 pr-3 py-2 text-sm text-slate-700 placeholder-slate-300 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition shadow-sm"
             >
-            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
         </div>
+        <button
+            id="btn-toggle-all"
+            onclick="toggleTodas()"
+            class="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white border border-slate-200 text-slate-500 text-sm font-medium hover:bg-slate-50 hover:text-slate-700 transition shadow-sm"
+        >
+            <i class="fa-solid fa-chevron-down text-xs" id="icon-toggle-all" style="transition:transform .3s;"></i>
+            <span id="label-toggle-all">Expandir todo</span>
+        </button>
     </div>
 
-    <!-- Tarjetas plegables por estudiante -->
-    <div class="space-y-5">
+    <!-- Estudiantes -->
+    <div class="space-y-2">
         {% for fila in datos_tabla %}
-        <details class="group bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden tarjeta-estudiante"
-                 data-nombre="{{ fila.estudiante.apellidos }} {{ fila.estudiante.nombres }}">
-            <summary class="list-none cursor-pointer select-none">
-                <div class="p-5 sm:p-6 hover:bg-gray-50/60 transition-colors">
-                    <div class="flex flex-col gap-4">
-                        <div class="flex items-start justify-between gap-4">
-                            <div class="flex items-start gap-4 min-w-0">
-                                <div class="shrink-0">
-                                    {% if fila.estudiante.foto %}
-                                        <img class="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl object-cover border border-gray-200 shadow-md" src="{{ fila.estudiante.foto.url }}" alt="{{ fila.estudiante.nombres }}">
-                                    {% else %}
-                                        <div class="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center border border-blue-200 text-blue-600 font-black text-md shadow-md" title="Sin foto">
-                                            {{ fila.estudiante.nombres|make_list|first|upper }}{{ fila.estudiante.apellidos|make_list|first|upper }}
-                                        </div>
-                                    {% endif %}
-                                </div>
+        <details
+            class="group bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:border-slate-300 transition-all tarjeta-estudiante"
+            data-nombre="{{ fila.estudiante.apellidos }} {{ fila.estudiante.nombres }}"
+        >
+            <summary class="list-none cursor-pointer select-none px-5 py-4 flex items-center justify-between gap-4 hover:bg-slate-50/70 transition-colors">
+                <div class="flex items-center gap-3 min-w-0">
+                    <!-- Avatar -->
+                    {% if fila.estudiante.foto %}
+                        <img class="shrink-0 h-10 w-10 rounded-xl object-cover border border-slate-200" src="{{ fila.estudiante.foto.url }}" alt="{{ fila.estudiante.nombres }}">
+                    {% else %}
+                        <div class="shrink-0 h-10 w-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-500 font-bold text-sm">
+                            {{ fila.estudiante.nombres|make_list|first|upper }}{{ fila.estudiante.apellidos|make_list|first|upper }}
+                        </div>
+                    {% endif %}
 
-                                <div class="min-w-0">
-                                    <div class="flex flex-wrap items-center gap-2">
-                                        <h2 class="text-lg sm:text-lg font-black text-gray-900 leading-tight truncate">
-                                            {{ fila.estudiante.apellidos }}, {{ fila.estudiante.nombres }}
-                                        </h2>
-
-                                        {% if fila.total_anotaciones > 0 %}
-                                        <button type="button" onclick="event.stopPropagation(); abrirModalBitacora('{{ fila.estudiante.id }}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-100 text-amber-800 hover:bg-amber-200 transition-all text-xs font-bold shadow-sm">
-                                            <i class="fa-solid fa-address-book"></i>
-                                            Bitácora ({{ fila.total_anotaciones }})
-                                        </button>
-                                        {% endif %}
-                                    </div>
-
-                                    <div class="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-500">
-                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 border border-gray-200 font-medium">
-                                            <i class="fa-solid fa-graduation-cap text-gray-400"></i>
-                                            Estudiante
-                                        </span>
-                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 font-medium text-blue-700">
-                                            <i class="fa-solid fa-clipboard-check"></i>
-                                            {{ fila.total_presente }}/{{ total_sesiones_mes }} asistencias
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="shrink-0 inline-flex items-center gap-2 px-3 py-2 rounded-2xl bg-gray-100 text-gray-600 border border-gray-200 font-semibold text-sm">
-                                <span class="hidden sm:inline">Ver detalles</span>
-                                <i class="fa-solid fa-chevron-down transition-transform duration-300 group-open:rotate-180"></i>
-                            </div>
+                    <div class="min-w-0">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <h2 class="font-display text-sm font-bold text-slate-900 truncate">
+                                {{ fila.estudiante.apellidos }}, {{ fila.estudiante.nombres }}
+                            </h2>
+                            {% if fila.total_anotaciones > 0 %}
+                            <button type="button"
+                                onclick="event.stopPropagation(); abrirModalBitacora('{{ fila.estudiante.id }}')"
+                                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 text-amber-600 border border-amber-100 text-[10px] font-semibold hover:bg-amber-100 transition">
+                                <i class="fa-solid fa-address-book text-[9px]"></i>
+                                Bitácora ({{ fila.total_anotaciones }})
+                            </button>
+                            {% endif %}
+                        </div>
+                        <div class="flex items-center gap-2 mt-0.5 flex-wrap">
+                            <span class="text-[11px] text-slate-400 font-medium">
+                                <i class="fa-solid fa-clipboard-check text-slate-300 mr-1"></i>
+                                {{ fila.total_presente }}/{{ total_sesiones_mes }} asistencias
+                            </span>
                         </div>
                     </div>
                 </div>
+
+                <div class="shrink-0 h-7 w-7 rounded-full bg-slate-100 group-open:bg-indigo-500 flex items-center justify-center transition-colors duration-200">
+                    <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 group-open:text-white transition-transform duration-300 group-open:rotate-180"></i>
+                </div>
             </summary>
 
-            <!-- Contenido colapsable -->
-            <div class="px-5 sm:px-6 pb-6 pt-0 border-t border-gray-100 bg-gray-50/40">
-                <div class="pt-5">
-                    <div class="flex items-center justify-between gap-3 mb-3">
-                        <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider">
-                            Asistencia y actividades por clase
-                        </h3>
-                        <div class="text-xs text-gray-400 flex items-center gap-2">
-                            <i class="fa-solid fa-arrows-left-right"></i>
-                            Desliza para ver más
-                        </div>
+            <!-- Celdas -->
+            <div class="px-5 pb-5 pt-1 border-t border-slate-100 bg-slate-50/40">
+                <div class="pt-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-400">Asistencia y actividades por clase</p>
+                        <p class="text-[10px] text-slate-300 flex items-center gap-1">
+                            <i class="fa-solid fa-arrows-left-right"></i> Desliza
+                        </p>
                     </div>
 
-                    <div class="grid grid-flow-col auto-cols-[11.75rem] gap-3 overflow-x-auto pb-2 snap-x snap-mandatory">
+                    <div class="grid grid-flow-col auto-cols-[176px] gap-2.5 overflow-x-auto pb-2 snap-x snap-mandatory">
                         {% for celda in fila.celdas %}
-                        <article class="snap-start rounded-2xl border p-3 transition-all shadow-sm hover:shadow-md
+                        <article class="snap-start rounded-xl border p-3 flex flex-col gap-2.5 transition-all hover:shadow-sm
                             {% if celda.asistencia %}
-                                {% if celda.asistencia.estado == 'PRESENTE' %}
-                                    bg-emerald-50 border-emerald-100
-                                {% elif celda.asistencia.estado == 'AUSENTE' %}
-                                    bg-red-50 border-red-100
-                                {% else %}
-                                    bg-amber-50 border-amber-100
-                                {% endif %}
-                            {% else %}
-                                bg-gray-50 border-gray-100
-                            {% endif %}
+                                {% if celda.asistencia.estado == 'PRESENTE' %}bg-emerald-50 border-emerald-100
+                                {% elif celda.asistencia.estado == 'AUSENTE' %}bg-red-50 border-red-100
+                                {% else %}bg-amber-50 border-amber-100{% endif %}
+                            {% else %}bg-slate-50 border-slate-100{% endif %}
                         ">
-                            <div class="flex items-start justify-between gap-2">
-                                <a href="{% url 'gestion:tomar_asistencia' celda.sesion.id %}" class="group block flex-1">
-                                    <div class="flex items-center gap-2">
-                                        <div class="h-9 w-9 rounded-xl bg-white border border-gray-200 shadow-sm flex items-center justify-center text-blue-700 font-black text-sm group-hover:scale-105 transition-transform">
-                                            C{{ celda.sesion.numero_clase }}
-                                        </div>
-                                        <div class="min-w-0">
-                                            <div class="text-sm font-bold text-gray-800 group-hover:text-blue-700 transition-colors">
-                                                Clase {{ celda.sesion.numero_clase }}
-                                            </div>
-                                            <div class="text-[11px] text-gray-500">
-                                                {{ celda.sesion.fecha|date:"d/m" }}
-                                            </div>
-                                        </div>
+                            <!-- Clase header -->
+                            <div class="flex items-center justify-between gap-2">
+                                <a href="{% url 'gestion:tomar_asistencia' celda.sesion.id %}" class="flex items-center gap-2 group/link flex-1 min-w-0">
+                                    <div class="h-8 w-8 shrink-0 rounded-lg bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-700 font-bold text-xs group-hover/link:border-indigo-300 group-hover/link:text-indigo-600 transition-colors">
+                                        C{{ celda.sesion.numero_clase }}
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="text-xs font-semibold text-slate-700 group-hover/link:text-indigo-600 transition-colors truncate">Clase {{ celda.sesion.numero_clase }}</div>
+                                        <div class="text-[10px] text-slate-400">{{ celda.sesion.fecha|date:"d/m" }}</div>
                                     </div>
                                 </a>
-
                                 {% if celda.sesion.actividad_realizada %}
-                                <span class="shrink-0 inline-flex items-center justify-center h-8 w-8 rounded-xl bg-yellow-100 text-yellow-600 border border-yellow-200" title="Hubo actividad">
-                                    <i class="fa-solid fa-star text-xs"></i>
+                                <span class="shrink-0 h-6 w-6 rounded-md bg-amber-100 border border-amber-200 flex items-center justify-center" title="Con actividad">
+                                    <i class="fa-solid fa-star text-amber-500 text-[9px]"></i>
                                 </span>
                                 {% endif %}
                             </div>
 
-                            <div class="mt-3">
-                                {% if celda.asistencia %}
-                                    <div class="flex items-center justify-between gap-2">
-                                        {% if celda.asistencia.estado == 'PRESENTE' %}
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-black">
-                                                <i class="fa-solid fa-circle-check"></i> PRESENTE
-                                            </span>
-                                        {% elif celda.asistencia.estado == 'AUSENTE' %}
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-100 text-red-700 text-[11px] font-black">
-                                                <i class="fa-solid fa-circle-xmark"></i> AUSENTE
-                                            </span>
-                                        {% else %}
-                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-[11px] font-black">
-                                                <i class="fa-solid fa-circle-question"></i> EXCUSA
-                                            </span>
-                                        {% endif %}
-
-                                        {% if celda.asistencia.evidencia_foto %}
-                                            <a href="{{ celda.asistencia.evidencia_foto.url }}" target="_blank" class="text-blue-500 hover:text-blue-700 transition-colors" title="Ver evidencia fotográfica">
-                                                <i class="fa-solid fa-image"></i>
-                                            </a>
-                                        {% endif %}
-                                    </div>
-
-                                    {% if celda.asistencia.estado == 'PRESENTE' %}
-                                    <div class="mt-3 space-y-2">
-                                        {% if celda.sesion.actividad_realizada %}
-                                        <div class="rounded-xl bg-white/90 border border-gray-100 p-2.5">
-                                            <div class="flex items-center justify-between gap-2">
-                                                <div class="flex items-center gap-2 text-xs font-semibold text-gray-700">
-                                                    <i class="fa-solid fa-bolt text-yellow-500"></i>
-                                                    Actividad en clase
-                                                </div>
-                                                {% if celda.asistencia.completo_actividad %}
-                                                    <i class="fa-solid fa-check text-emerald-500" title="Actividad entregada"></i>
-                                                {% else %}
-                                                    <i class="fa-solid fa-xmark text-red-400" title="No entregó actividad"></i>
-                                                {% endif %}
-                                            </div>
-
-                                            {% if celda.asistencia.calificacion %}
-                                            <div class="mt-2 flex items-center justify-between gap-2">
-                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-black border
-                                                    {% if celda.asistencia.calificacion >= 70 %} bg-emerald-100 text-emerald-700 border-emerald-200
-                                                    {% else %} bg-red-100 text-red-700 border-red-200 {% endif %}">
-                                                    {{ celda.asistencia.calificacion }}
-                                                </span>
-
-                                                {% if celda.asistencia.comentario_actividad %}
-                                                <button type="button" onclick="abrirModalAnotacion('{{ fila.estudiante.nombres|escapejs }} {{ fila.estudiante.apellidos|escapejs }}', '{{ celda.asistencia.comentario_actividad|escapejs }}', 'Actividad en Clase')" class="text-yellow-500 hover:text-yellow-600 transition-transform hover:scale-110" title="Leer anotación">
-                                                    <i class="fa-solid fa-comment-dots"></i>
-                                                </button>
-                                                {% endif %}
-                                            </div>
-                                            {% endif %}
-                                        </div>
-                                        {% endif %}
-
-                                        {% if celda.sesion.evalua_tarea %}
-                                        <div class="rounded-xl bg-white/90 border border-gray-100 p-2.5">
-                                            <div class="flex items-center justify-between gap-2">
-                                                <div class="flex items-center gap-2 text-xs font-semibold text-gray-700">
-                                                    <i class="fa-solid fa-house text-violet-500"></i>
-                                                    Tarea en casa
-                                                </div>
-                                                {% if celda.asistencia.entrego_tarea %}
-                                                    <i class="fa-solid fa-check text-emerald-500" title="Trajo la tarea"></i>
-                                                {% else %}
-                                                    <i class="fa-solid fa-xmark text-red-400" title="No trajo la tarea"></i>
-                                                {% endif %}
-                                            </div>
-
-                                            {% if celda.asistencia.calificacion_tarea %}
-                                            <div class="mt-2 flex items-center justify-between gap-2">
-                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-black border
-                                                    {% if celda.asistencia.calificacion_tarea >= 70 %} bg-emerald-100 text-emerald-700 border-emerald-200
-                                                    {% else %} bg-red-100 text-red-700 border-red-200 {% endif %}">
-                                                    {{ celda.asistencia.calificacion_tarea }}
-                                                </span>
-
-                                                {% if celda.asistencia.comentario_tarea %}
-                                                <button type="button" onclick="abrirModalAnotacion('{{ fila.estudiante.nombres|escapejs }} {{ fila.estudiante.apellidos|escapejs }}', '{{ celda.asistencia.comentario_tarea|escapejs }}', 'Tarea en Casa')" class="text-yellow-500 hover:text-yellow-600 transition-transform hover:scale-110" title="Leer observación">
-                                                    <i class="fa-solid fa-comment-dots"></i>
-                                                </button>
-                                                {% endif %}
-                                            </div>
-                                            {% endif %}
-                                        </div>
-                                        {% endif %}
-
-                                        {% if celda.sesion.realizo_quiz %}
-                                        <div class="rounded-xl bg-white/90 border border-gray-100 p-2.5">
-                                            <div class="flex items-center justify-between gap-2">
-                                                <div class="flex items-center gap-2 text-xs font-semibold text-gray-700">
-                                                    <i class="fa-solid fa-file-signature text-orange-500"></i>
-                                                    Quiz
-                                                </div>
-                                                {% if celda.asistencia.realizo_quiz %}
-                                                    <i class="fa-solid fa-check text-emerald-500" title="Realizó quiz"></i>
-                                                {% else %}
-                                                    <i class="fa-solid fa-xmark text-red-400" title="No realizó quiz"></i>
-                                                {% endif %}
-                                            </div>
-
-                                            {% if celda.asistencia.calificacion_quiz %}
-                                            <div class="mt-2 flex items-center justify-between gap-2">
-                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-black border
-                                                    {% if celda.asistencia.calificacion_quiz >= 70 %} bg-emerald-100 text-emerald-700 border-emerald-200
-                                                    {% else %} bg-red-100 text-red-700 border-red-200 {% endif %}">
-                                                    {{ celda.asistencia.calificacion_quiz }}
-                                                </span>
-
-                                                {% if celda.asistencia.comentario_quiz %}
-                                                <button type="button" onclick="abrirModalAnotacion('{{ fila.estudiante.nombres|escapejs }} {{ fila.estudiante.apellidos|escapejs }}', '{{ celda.asistencia.comentario_quiz|escapejs }}', 'Quiz')" class="text-yellow-500 hover:text-yellow-600 transition-transform hover:scale-110" title="Leer observación">
-                                                    <i class="fa-solid fa-comment-dots"></i>
-                                                </button>
-                                                {% endif %}
-                                            </div>
-                                            {% endif %}
-                                        </div>
-                                        {% endif %}
-
-                                        {% if celda.sesion.realizo_examen %}
-                                        <div class="rounded-xl bg-white/90 border border-gray-100 p-2.5">
-                                            <div class="flex items-center justify-between gap-2">
-                                                <div class="flex items-center gap-2 text-xs font-semibold text-gray-700">
-                                                    <i class="fa-solid fa-graduation-cap text-rose-500"></i>
-                                                    Examen
-                                                </div>
-                                                {% if celda.asistencia.realizo_examen %}
-                                                    <i class="fa-solid fa-check text-emerald-500" title="Realizó examen"></i>
-                                                {% else %}
-                                                    <i class="fa-solid fa-ban text-red-400" title="No realizó examen"></i>
-                                                {% endif %}
-                                            </div>
-
-                                            {% if celda.asistencia.calificacion_examen %}
-                                            <div class="mt-2 flex items-center justify-between gap-2">
-                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-black border
-                                                    {% if celda.asistencia.calificacion_examen >= 70 %} bg-emerald-100 text-emerald-700 border-emerald-200
-                                                    {% else %} bg-red-100 text-red-700 border-red-200 {% endif %}">
-                                                    {{ celda.asistencia.calificacion_examen }}
-                                                </span>
-
-                                                {% if celda.asistencia.comentario_examen %}
-                                                <button type="button" onclick="abrirModalAnotacion('{{ fila.estudiante.nombres|escapejs }} {{ fila.estudiante.apellidos|escapejs }}', '{{ celda.asistencia.comentario_examen|escapejs }}', 'Examen')" class="text-yellow-500 hover:text-yellow-600 transition-transform hover:scale-110" title="Leer observación">
-                                                    <i class="fa-solid fa-comment-dots"></i>
-                                                </button>
-                                                {% endif %}
-                                            </div>
-                                            {% endif %}
-                                        </div>
-                                        {% endif %}
-                                    </div>
-                                    {% endif %}
+                            <!-- Estado asistencia -->
+                            {% if celda.asistencia %}
+                            <div class="flex items-center justify-between gap-1">
+                                {% if celda.asistencia.estado == 'PRESENTE' %}
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 text-[10px] font-semibold">
+                                        <i class="fa-solid fa-circle-check text-[9px]"></i> Presente
+                                    </span>
+                                {% elif celda.asistencia.estado == 'AUSENTE' %}
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-red-100 text-red-600 text-[10px] font-semibold">
+                                        <i class="fa-solid fa-circle-xmark text-[9px]"></i> Ausente
+                                    </span>
                                 {% else %}
-                                    <div class="rounded-xl bg-white/80 border border-gray-100 p-3 text-center">
-                                        <div class="text-sm font-bold text-gray-400">Sin registro</div>
-                                        <div class="text-[11px] text-gray-400 mt-1">No hay asistencia para esta clase</div>
-                                    </div>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-100 text-amber-700 text-[10px] font-semibold">
+                                        <i class="fa-solid fa-circle-question text-[9px]"></i> Excusa
+                                    </span>
+                                {% endif %}
+                                {% if celda.asistencia.evidencia_foto %}
+                                <a href="{{ celda.asistencia.evidencia_foto.url }}" target="_blank" class="text-slate-400 hover:text-indigo-500 transition-colors" title="Ver evidencia">
+                                    <i class="fa-solid fa-image text-xs"></i>
+                                </a>
                                 {% endif %}
                             </div>
 
-                            <div class="mt-3 pt-3 border-t border-white/70 flex items-center justify-between">
-                                <span class="text-[11px] text-gray-500 font-medium">
+                            <!-- Evaluaciones (solo si PRESENTE) -->
+                            {% if celda.asistencia.estado == 'PRESENTE' %}
+                            <div class="space-y-1.5">
+
+                                {% if celda.sesion.actividad_realizada %}
+                                <div class="bg-white border border-slate-100 rounded-lg p-2">
+                                    <div class="flex items-center justify-between gap-1">
+                                        <span class="text-[10px] font-semibold text-slate-500 flex items-center gap-1">
+                                            <i class="fa-solid fa-bolt text-amber-400 text-[9px]"></i> Actividad
+                                        </span>
+                                        {% if celda.asistencia.completo_actividad %}
+                                            <i class="fa-solid fa-check text-emerald-500 text-[10px]"></i>
+                                        {% else %}
+                                            <i class="fa-solid fa-xmark text-red-400 text-[10px]"></i>
+                                        {% endif %}
+                                    </div>
+                                    {% if celda.asistencia.calificacion %}
+                                    <div class="flex items-center justify-between gap-1 mt-1.5">
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold border
+                                            {% if celda.asistencia.calificacion >= 70 %}bg-emerald-50 text-emerald-700 border-emerald-200{% else %}bg-red-50 text-red-600 border-red-200{% endif %}">
+                                            {{ celda.asistencia.calificacion }}
+                                        </span>
+                                        {% if celda.asistencia.comentario_actividad %}
+                                        <button type="button" onclick="abrirModalAnotacion('{{ fila.estudiante.nombres|escapejs }} {{ fila.estudiante.apellidos|escapejs }}', '{{ celda.asistencia.comentario_actividad|escapejs }}', 'Actividad en Clase')"
+                                            class="text-slate-300 hover:text-amber-500 transition-colors" title="Ver nota">
+                                            <i class="fa-solid fa-comment-dots text-xs"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+
+                                {% if celda.sesion.evalua_tarea %}
+                                <div class="bg-white border border-slate-100 rounded-lg p-2">
+                                    <div class="flex items-center justify-between gap-1">
+                                        <span class="text-[10px] font-semibold text-slate-500 flex items-center gap-1">
+                                            <i class="fa-solid fa-house text-violet-400 text-[9px]"></i> Tarea
+                                        </span>
+                                        {% if celda.asistencia.entrego_tarea %}
+                                            <i class="fa-solid fa-check text-emerald-500 text-[10px]"></i>
+                                        {% else %}
+                                            <i class="fa-solid fa-xmark text-red-400 text-[10px]"></i>
+                                        {% endif %}
+                                    </div>
+                                    {% if celda.asistencia.calificacion_tarea %}
+                                    <div class="flex items-center justify-between gap-1 mt-1.5">
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold border
+                                            {% if celda.asistencia.calificacion_tarea >= 70 %}bg-emerald-50 text-emerald-700 border-emerald-200{% else %}bg-red-50 text-red-600 border-red-200{% endif %}">
+                                            {{ celda.asistencia.calificacion_tarea }}
+                                        </span>
+                                        {% if celda.asistencia.comentario_tarea %}
+                                        <button type="button" onclick="abrirModalAnotacion('{{ fila.estudiante.nombres|escapejs }} {{ fila.estudiante.apellidos|escapejs }}', '{{ celda.asistencia.comentario_tarea|escapejs }}', 'Tarea en Casa')"
+                                            class="text-slate-300 hover:text-amber-500 transition-colors" title="Ver nota">
+                                            <i class="fa-solid fa-comment-dots text-xs"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+
+                                {% if celda.sesion.realizo_quiz %}
+                                <div class="bg-white border border-slate-100 rounded-lg p-2">
+                                    <div class="flex items-center justify-between gap-1">
+                                        <span class="text-[10px] font-semibold text-slate-500 flex items-center gap-1">
+                                            <i class="fa-solid fa-file-signature text-orange-400 text-[9px]"></i> Quiz
+                                        </span>
+                                        {% if celda.asistencia.realizo_quiz %}
+                                            <i class="fa-solid fa-check text-emerald-500 text-[10px]"></i>
+                                        {% else %}
+                                            <i class="fa-solid fa-xmark text-red-400 text-[10px]"></i>
+                                        {% endif %}
+                                    </div>
+                                    {% if celda.asistencia.calificacion_quiz %}
+                                    <div class="flex items-center justify-between gap-1 mt-1.5">
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold border
+                                            {% if celda.asistencia.calificacion_quiz >= 70 %}bg-emerald-50 text-emerald-700 border-emerald-200{% else %}bg-red-50 text-red-600 border-red-200{% endif %}">
+                                            {{ celda.asistencia.calificacion_quiz }}
+                                        </span>
+                                        {% if celda.asistencia.comentario_quiz %}
+                                        <button type="button" onclick="abrirModalAnotacion('{{ fila.estudiante.nombres|escapejs }} {{ fila.estudiante.apellidos|escapejs }}', '{{ celda.asistencia.comentario_quiz|escapejs }}', 'Quiz')"
+                                            class="text-slate-300 hover:text-amber-500 transition-colors" title="Ver nota">
+                                            <i class="fa-solid fa-comment-dots text-xs"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+
+                                {% if celda.sesion.realizo_examen %}
+                                <div class="bg-white border border-slate-100 rounded-lg p-2">
+                                    <div class="flex items-center justify-between gap-1">
+                                        <span class="text-[10px] font-semibold text-slate-500 flex items-center gap-1">
+                                            <i class="fa-solid fa-graduation-cap text-rose-400 text-[9px]"></i> Examen
+                                        </span>
+                                        {% if celda.asistencia.realizo_examen %}
+                                            <i class="fa-solid fa-check text-emerald-500 text-[10px]"></i>
+                                        {% else %}
+                                            <i class="fa-solid fa-ban text-red-400 text-[10px]"></i>
+                                        {% endif %}
+                                    </div>
+                                    {% if celda.asistencia.calificacion_examen %}
+                                    <div class="flex items-center justify-between gap-1 mt-1.5">
+                                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold border
+                                            {% if celda.asistencia.calificacion_examen >= 70 %}bg-emerald-50 text-emerald-700 border-emerald-200{% else %}bg-red-50 text-red-600 border-red-200{% endif %}">
+                                            {{ celda.asistencia.calificacion_examen }}
+                                        </span>
+                                        {% if celda.asistencia.comentario_examen %}
+                                        <button type="button" onclick="abrirModalAnotacion('{{ fila.estudiante.nombres|escapejs }} {{ fila.estudiante.apellidos|escapejs }}', '{{ celda.asistencia.comentario_examen|escapejs }}', 'Examen')"
+                                            class="text-slate-300 hover:text-amber-500 transition-colors" title="Ver nota">
+                                            <i class="fa-solid fa-comment-dots text-xs"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+
+                            </div>
+                            {% endif %}
+
+                            {% else %}
+                            <div class="bg-white border border-slate-100 rounded-lg p-2.5 text-center">
+                                <p class="text-[10px] text-slate-400 font-medium">Sin registro</p>
+                            </div>
+                            {% endif %}
+
+                            <!-- Footer celda -->
+                            <div class="flex items-center justify-between pt-1 border-t border-white/60">
+                                <span class="text-[10px] text-slate-400">
                                     {% if celda.sesion.actividad_realizada or celda.sesion.evalua_tarea or celda.sesion.realizo_quiz or celda.sesion.realizo_examen %}
-                                        Clase con evaluación
+                                        Con evaluación
                                     {% else %}
                                         Clase normal
                                     {% endif %}
                                 </span>
-
-                                <a href="{% url 'gestion:tomar_asistencia' celda.sesion.id %}" class="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors">
-                                    Editar
-                                    <i class="fa-solid fa-pen text-[10px]"></i>
+                                <a href="{% url 'gestion:tomar_asistencia' celda.sesion.id %}" class="text-[10px] font-semibold text-indigo-400 hover:text-indigo-600 transition-colors flex items-center gap-0.5">
+                                    Editar <i class="fa-solid fa-pen text-[8px]"></i>
                                 </a>
                             </div>
                         </article>
@@ -363,89 +331,92 @@
             </div>
         </details>
         {% empty %}
-        <div class="bg-white rounded-3xl shadow-lg border border-gray-100 p-10 text-center">
-            <div class="mx-auto h-14 w-14 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 mb-4">
-                <i class="fa-solid fa-users text-2xl"></i>
-            </div>
-            <h3 class="text-lg font-bold text-gray-800">No hay datos para mostrar</h3>
-            <p class="text-gray-500 mt-2">No hay estudiantes registrados o no se han dictado clases en este periodo.</p>
+        <div class="border border-dashed border-slate-200 rounded-2xl p-10 text-center bg-white">
+            <i class="fa-solid fa-users text-slate-300 text-2xl mb-3 block"></i>
+            <p class="font-display font-bold text-slate-700">No hay datos para mostrar</p>
+            <p class="text-sm text-slate-400 mt-1">No hay estudiantes registrados o no se han dictado clases en este periodo.</p>
         </div>
         {% endfor %}
     </div>
+
 </div>
 
-<!-- Modales de bitácora -->
+<!-- ── Modales bitácora ── -->
 {% for fila in datos_tabla %}
-    {% if fila.total_anotaciones > 0 %}
-    <div id="modalBitacora_{{ fila.estudiante.id }}" class="fixed inset-0 z-50 hidden bg-gray-900/60 flex items-center justify-center backdrop-blur-sm px-4">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden max-h-[85vh] flex flex-col border border-gray-100">
-            <div class="bg-gradient-to-r from-amber-50 to-yellow-50 border-b border-yellow-200 p-4 flex items-center justify-between shrink-0">
-                <div class="flex items-center text-yellow-800">
-                    <div class="h-11 w-11 rounded-2xl bg-yellow-100 flex items-center justify-center mr-3 border border-yellow-200">
-                        <i class="fa-solid fa-address-book text-lg"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-black text-base leading-tight">Bitácora de Seguimiento</h3>
-                        <p class="text-xs text-yellow-700">{{ fila.estudiante.nombres }} {{ fila.estudiante.apellidos }}</p>
-                    </div>
+{% if fila.total_anotaciones > 0 %}
+<div id="modalBitacora_{{ fila.estudiante.id }}" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4" style="display:none;">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden max-h-[85vh] flex flex-col border border-slate-100">
+        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="h-9 w-9 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center">
+                    <i class="fa-solid fa-address-book text-amber-500 text-sm"></i>
                 </div>
-                <button onclick="cerrarModalBitacora('{{ fila.estudiante.id }}')" class="text-gray-400 hover:text-gray-700 transition-colors focus:outline-none">
-                    <i class="fa-solid fa-xmark text-2xl"></i>
-                </button>
-            </div>
-
-            <div class="p-4 overflow-y-auto space-y-3 bg-gray-50 flex-grow">
-                {% for anotacion in fila.anotaciones %}
-                <div class="bg-white border-l-4 {% if anotacion.tipo == 'COMPORTAMIENTO' %}border-red-400{% elif anotacion.tipo == 'PARTICIPACION' %}border-green-400{% elif anotacion.tipo == 'MATERIALES' %}border-orange-400{% else %}border-gray-400{% endif %} p-4 rounded-2xl shadow-sm">
-                    <div class="flex justify-between items-start gap-3 mb-2">
-                        <span class="text-[10px] font-black uppercase tracking-wider bg-gray-100 px-2.5 py-1 rounded-full text-gray-600 border border-gray-200">
-                            {{ anotacion.get_tipo_display }}
-                        </span>
-                        <span class="text-[10px] font-black text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-full">
-                            C-{{ anotacion.sesion.numero_clase }} ({{ anotacion.sesion.fecha|date:"d/m" }})
-                        </span>
-                    </div>
-                    <p class="text-gray-700 text-sm italic whitespace-pre-line">"{{ anotacion.descripcion }}"</p>
+                <div>
+                    <p class="text-sm font-bold text-slate-900 leading-tight">Bitácora de Seguimiento</p>
+                    <p class="text-xs text-slate-400">{{ fila.estudiante.nombres }} {{ fila.estudiante.apellidos }}</p>
                 </div>
-                {% endfor %}
             </div>
-
-            <div class="p-4 border-t border-gray-100 bg-white flex justify-end shrink-0">
-                <button onclick="cerrarModalBitacora('{{ fila.estudiante.id }}')" class="bg-gray-100 border border-gray-300 text-gray-700 hover:bg-gray-200 font-bold py-2.5 px-6 rounded-xl shadow-sm transition-all text-sm">
-                    Cerrar historial
-                </button>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-{% endfor %}
-
-<div id="modalAnotacion" class="fixed inset-0 z-50 hidden bg-gray-900/60 flex items-center justify-center backdrop-blur-sm px-4">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100">
-        <div class="bg-gradient-to-r from-yellow-50 to-amber-50 border-b border-yellow-200 p-4 flex items-center justify-between">
-            <div class="flex items-center text-yellow-700">
-                <div class="h-10 w-10 rounded-2xl bg-yellow-100 flex items-center justify-center mr-3 border border-yellow-200">
-                    <i class="fa-solid fa-comment-dots text-lg"></i>
-                </div>
-                <h3 class="font-black text-lg" id="modalTitulo">Anotación</h3>
-            </div>
-            <button onclick="cerrarModalAnotacion()" class="text-gray-400 hover:text-gray-700 transition-colors focus:outline-none">
-                <i class="fa-solid fa-xmark text-2xl"></i>
+            <button onclick="cerrarModalBitacora('{{ fila.estudiante.id }}')" class="h-8 w-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-600 transition">
+                <i class="fa-solid fa-xmark text-sm"></i>
             </button>
         </div>
+        <div class="p-4 overflow-y-auto space-y-2 flex-grow bg-slate-50/50">
+            {% for anotacion in fila.anotaciones %}
+            <div class="bg-white border-l-4 rounded-xl p-3.5 shadow-sm
+                {% if anotacion.tipo == 'COMPORTAMIENTO' %}border-red-400
+                {% elif anotacion.tipo == 'PARTICIPACION' %}border-emerald-400
+                {% elif anotacion.tipo == 'MATERIALES' %}border-orange-400
+                {% else %}border-slate-300{% endif %}">
+                <div class="flex items-center justify-between gap-2 mb-2">
+                    <span class="text-[10px] font-semibold uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded text-slate-500">
+                        {{ anotacion.get_tipo_display }}
+                    </span>
+                    <span class="text-[10px] font-semibold text-indigo-500 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded">
+                        C-{{ anotacion.sesion.numero_clase }} · {{ anotacion.sesion.fecha|date:"d/m" }}
+                    </span>
+                </div>
+                <p class="text-slate-600 text-sm italic leading-relaxed">"{{ anotacion.descripcion }}"</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="px-4 py-3 border-t border-slate-100 bg-white flex justify-end shrink-0">
+            <button onclick="cerrarModalBitacora('{{ fila.estudiante.id }}')" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-sm transition">
+                Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
 
-        <div class="p-5">
-            <p class="text-xs text-gray-500 font-black uppercase tracking-wider mb-1">Estudiante</p>
-            <p id="modalEstudiante" class="text-gray-800 font-semibold text-lg mb-4"></p>
-
-            <p class="text-xs text-gray-500 font-black uppercase tracking-wider mb-1">Observación</p>
-            <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 text-gray-700 italic shadow-inner whitespace-pre-line">
-                "<span id="modalTexto"></span>"
+<!-- ── Modal anotación ── -->
+<div id="modalAnotacion" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4" style="display:none;">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100">
+        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="h-9 w-9 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center">
+                    <i class="fa-solid fa-comment-dots text-amber-500 text-sm"></i>
+                </div>
+                <p class="font-bold text-slate-900 text-sm" id="modalTitulo">Anotación</p>
+            </div>
+            <button onclick="cerrarModalAnotacion()" class="h-8 w-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-600 transition">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+        <div class="p-5 space-y-4">
+            <div>
+                <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Estudiante</p>
+                <p id="modalEstudiante" class="text-slate-800 font-semibold text-sm"></p>
+            </div>
+            <div>
+                <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Observación</p>
+                <div class="bg-slate-50 border border-slate-100 rounded-xl p-3.5 text-slate-600 text-sm italic leading-relaxed whitespace-pre-line">
+                    "<span id="modalTexto"></span>"
+                </div>
             </div>
         </div>
-
-        <div class="p-4 border-t border-gray-100 bg-gray-50 flex justify-end">
-            <button onclick="cerrarModalAnotacion()" class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 font-bold py-2.5 px-6 rounded-xl shadow-sm transition-all text-sm focus:ring-2 focus:ring-gray-200">
+        <div class="px-5 py-3 border-t border-slate-100 flex justify-end">
+            <button onclick="cerrarModalAnotacion()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-sm transition">
                 Cerrar
             </button>
         </div>
@@ -453,72 +424,57 @@
 </div>
 
 <script>
-    function abrirModalBitacora(estudianteId) {
-        const modal = document.getElementById('modalBitacora_' + estudianteId);
-        if (modal) {
-            modal.classList.remove('hidden');
-            document.body.classList.add('overflow-hidden');
-        }
-    }
+function abrirModalBitacora(id) {
+    var m = document.getElementById('modalBitacora_' + id);
+    if (m) { m.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+}
+function cerrarModalBitacora(id) {
+    var m = document.getElementById('modalBitacora_' + id);
+    if (m) { m.style.display = 'none'; document.body.style.overflow = ''; }
+}
+function abrirModalAnotacion(estudiante, texto, tipo) {
+    document.getElementById('modalTitulo').innerText = tipo;
+    document.getElementById('modalEstudiante').innerText = estudiante;
+    document.getElementById('modalTexto').innerText = texto;
+    var m = document.getElementById('modalAnotacion');
+    m.style.display = 'flex'; document.body.style.overflow = 'hidden';
+}
+function cerrarModalAnotacion() {
+    document.getElementById('modalAnotacion').style.display = 'none';
+    document.body.style.overflow = '';
+}
 
-    function cerrarModalBitacora(estudianteId) {
-        const modal = document.getElementById('modalBitacora_' + estudianteId);
-        if (modal) {
-            modal.classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
-        }
-    }
-
-    function abrirModalAnotacion(estudiante, texto, tipo) {
-        document.getElementById('modalTitulo').innerText = 'Nota: ' + tipo;
-        document.getElementById('modalEstudiante').innerText = estudiante;
-        document.getElementById('modalTexto').innerText = texto;
-        document.getElementById('modalAnotacion').classList.remove('hidden');
-        document.body.classList.add('overflow-hidden');
-    }
-
-    function cerrarModalAnotacion() {
-        document.getElementById('modalAnotacion').classList.add('hidden');
-        document.body.classList.remove('overflow-hidden');
-    }
-
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            const modalAnotacion = document.getElementById('modalAnotacion');
-            if (modalAnotacion && !modalAnotacion.classList.contains('hidden')) {
-                cerrarModalAnotacion();
-            }
-
-            document.querySelectorAll('[id^="modalBitacora_"]').forEach(function(modal) {
-                if (!modal.classList.contains('hidden')) {
-                    modal.classList.add('hidden');
-                    document.body.classList.remove('overflow-hidden');
-                }
-            });
-        }
+document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Escape') return;
+    cerrarModalAnotacion();
+    document.querySelectorAll('[id^="modalBitacora_"]').forEach(function(m) {
+        m.style.display = 'none';
     });
+    document.body.style.overflow = '';
+});
 
-    // Buscador
-    const buscador = document.getElementById('buscador-estudiantes');
-
-    if (buscador) {
-        buscador.addEventListener('keyup', function() {
-            const texto = this.value.toLowerCase();
-            const tarjetas = document.querySelectorAll('.tarjeta-estudiante');
-
-            tarjetas.forEach(function(tarjeta) {
-                const nombre = tarjeta.getAttribute('data-nombre').toLowerCase();
-
-                if (nombre.includes(texto)) {
-                    tarjeta.style.display = 'block';
-                    tarjeta.open = true;
-                } else {
-                    tarjeta.style.display = 'none';
-                    tarjeta.open = false;
-                }
-            });
+// Buscador
+var buscador = document.getElementById('buscador-estudiantes');
+if (buscador) {
+    buscador.addEventListener('input', function() {
+        var q = this.value.toLowerCase();
+        document.querySelectorAll('.tarjeta-estudiante').forEach(function(t) {
+            var nombre = (t.dataset.nombre || '').toLowerCase();
+            var match = nombre.includes(q);
+            t.style.display = match ? '' : 'none';
+            if (match && q) t.open = true;
         });
-    }
+    });
+}
+
+// Expandir / plegar todo
+var todasAbiertas = false;
+function toggleTodas() {
+    todasAbiertas = !todasAbiertas;
+    document.querySelectorAll('.tarjeta-estudiante').forEach(function(t) { t.open = todasAbiertas; });
+    document.getElementById('label-toggle-all').innerText = todasAbiertas ? 'Plegar todo' : 'Expandir todo';
+    document.getElementById('icon-toggle-all').style.transform = todasAbiertas ? 'rotate(180deg)' : '';
+}
 </script>
 
 {% endblock %}
